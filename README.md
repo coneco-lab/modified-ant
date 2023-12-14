@@ -1,6 +1,6 @@
 ## (modified) Attention Network Test ##
 
-This repository contains a modified version of the Attention Network Test (mANT) ([Fan et al., 2002](https://direct.mit.edu/jocn/article-abstract/14/3/340/3628/Testing-the-Efficiency-and-Independence-of)), implemented in Python. 
+This repository contains a modified version of the Attention Network Test ([Fan et al., 2002](https://direct.mit.edu/jocn/article-abstract/14/3/340/3628/Testing-the-Efficiency-and-Independence-of)) (mANT), implemented in Python. 
 
 ---
 
