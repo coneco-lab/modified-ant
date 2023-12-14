@@ -54,4 +54,5 @@ For questions or improvement suggestions, you can:
 - Write `matteo [dot] dematola [at] unitn [dot] it`
 
 Matteo De Matola ([website](https://webapps.unitn.it/du/en/Persona/PER0247884/Pubblicazioni) | [GitHub](https://github.com/matteo-d-m))
+
 December 2023
