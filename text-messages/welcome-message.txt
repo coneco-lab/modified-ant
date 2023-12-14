@@ -1,0 +1,14 @@
+Ciao! Benvenut* in questo esperimento.
+
+Hai un compito molto semplice: osservare delle immagini e premere dei tasti.
+
+Le immagini apparterranno a tre categorie:
+
+1) Croce 
+2) Asterischi
+3) Serie di frecce in orizzontale
+
+La croce sara' sempre presente, mentre gli asterischi e la serie di frecce appariranno e scompariranno. 
+Gli asterischi potranno essere singoli o in coppia.
+
+Premi SPAZIO per vedere degli esempi.
