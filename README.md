@@ -27,7 +27,7 @@ Please preserve the current directory structure to minimize the risk of code bre
 |[PsychoPy](https://psychopy.org/) | 2023.2.3 | [Manual installation](https://www.psychopy.org/download.html#manual-installations) |
 |[pandas](https://pandas.pydata.org/) | 1.5.3 | `conda install pandas` |
 
-**Installation notes:**
+# **Installation notes:**
 
 - A good guide to Python installations (not specific to the mANT nor PsychoPy) is available at [this HTTPS URL](https://github.com/vigji/python-cimec/blob/main/python-installation.md) (by [Luigi Petrucco](https://github.com/vigji))
 - We had problems installing PsychoPy via `conda`, despite different machines with different operating systems and different levels of user expertise. We found it easier to install via [`pip`](https://pip.pypa.io/en/stable/)
@@ -38,7 +38,7 @@ Please preserve the current directory structure to minimize the risk of code bre
 
 ---
 
-**Planned improvements:**
+# **Planned improvements:**
 
 - This code is being published before piloting, meaning that some task parameters might (and probably will) change (date of publication: December 2023)
 - Add functions to compile `mant-conditions.csv` automatically 
@@ -47,13 +47,11 @@ Please preserve the current directory structure to minimize the risk of code bre
 
 --- 
 
-**Contacts:**
+# **Contacts:**
 
 For questions or improvement suggestions, you can:
 - Open an issue at - or send a pull request to - this repository
 - Write `matteo [dot] dematola [at] unitn [dot] it`
-
---- 
 
 Matteo De Matola ([website](https://webapps.unitn.it/du/en/Persona/PER0247884/Pubblicazioni) | [GitHub](https://github.com/matteo-d-m))
 December 2023
