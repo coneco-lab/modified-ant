@@ -3,7 +3,7 @@ import random
 from psychopy import monitors, visual
    
 conditions_file = "mant-conditions.csv"
-NUMBER_OF_BLOCKS = 2
+NUMBER_OF_BLOCKS = 10
 TRIALS_PER_BLOCK = 96 
 
 output_variables = ["cue_location",
