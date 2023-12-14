@@ -29,7 +29,7 @@ Please preserve the current directory structure to minimize the risk of code bre
 
 # **Installation notes:**
 
-- A good guide to Python installations (not specific to the mANT nor PsychoPy) is available at [this HTTPS URL](https://github.com/vigji/python-cimec/blob/main/python-installation.md) (by [Luigi Petrucco](https://github.com/vigji))
+- A good guide to Python installations (not specific to the mANT nor PsychoPy) is available at [this HTTPS URL](https://github.com/vigji/python-cimec/blob/main/python-installation.md)
 - We had problems installing PsychoPy via `conda`, despite different machines with different operating systems and different levels of user expertise. We found it easier to install via [`pip`](https://pip.pypa.io/en/stable/)
 - If you will only use Python to run the mANT, the standalone PsychoPy version (SPV) is your best installation option (simply because it's the easiest). Visit [PsychoPy](https://psychopy.org/)'s homepage for details. However, if you use (or are planning on using) Python beyond the mANT, we strongly discourage the SPV because:
     - It comes with its own Python installation, even if you already have one on your machine. This can get messy
