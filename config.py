@@ -3,8 +3,8 @@ import random
 from psychopy import monitors, visual
    
 conditions_file = "mant-conditions.csv"
-NUMBER_OF_BLOCKS = 10
-TRIALS_PER_BLOCK = 96 
+NUMBER_OF_BLOCKS = 9
+TRIALS_PER_BLOCK = 72
 
 output_variables = ["cue_location",
                     "sequence_location",
@@ -45,7 +45,7 @@ display_times = {"instructions": 180,
                  "cue_demo": 10,
                  "arrows_demo": 10,        
                  "initial_fixation": [0.001*random.randrange(400,1600,100) for trial in range(TRIALS_PER_BLOCK)], 
-                 "later_fixation": 0.4,                              
+                 "later_fixation": 1,                              
                  "cue": 0.1,                                         
                  "target": 1.7,
                  "end_of_block_text": 60}                                      

@@ -73,11 +73,13 @@ def display_text(file_to_read, window, display_duration):
                                    height=0.5)
     instructions.setAutoDraw(True)
     for frame in range(display_duration):
-        keys = event.getKeys(keyList=["space"])    
+        keys = event.getKeys(keyList=["space","escape"])    
         if len(keys)>0:
+            response = keys[0]
             break
         window.flip()
     instructions.setAutoDraw(False)
+    return response
 
 def display_demos(trials_pool, window, demos, demos_frames):
     """Displays examples of experimental stimuli. 
@@ -177,11 +179,11 @@ def run_trials_save_data(trials, response_clock, output_table):
             keys = event.getKeys(keyList=["left","right","escape"])
             if len(keys)>0:
                 response = keys[0]
+                if response == "escape":
+                    trials.finished = True
                 reaction_time = response_clock.getTime()
                 break
             config.window.flip()
-            if response == "escape":
-                trials.finished = True
 
         for arrow in config.arrows:                                                     # relevant frames now ended, so stop drawing the flankers + target sequence 
             arrow.setAutoDraw(False)
