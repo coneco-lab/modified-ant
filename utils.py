@@ -189,9 +189,9 @@ def run_trials_save_data(trials, response_clock, output_table):
             arrow.setAutoDraw(False)
 
         try:
-            last_fixation_time = 3.5 - float(reaction_time) - config.display_times["initial_fixation"][trial_number]
+            last_fixation_time = 4.5 - float(reaction_time) - config.display_times["initial_fixation"][trial_number]
         except TypeError:
-            last_fixation_time = 3.5 - config.display_times["initial_fixation"][trial_number]
+            last_fixation_time = 4.5 - config.display_times["initial_fixation"][trial_number]
         last_fixation_frames = int(last_fixation_time*config.monitor_info["refresh_rate_hz"])
         for frame in range(last_fixation_frames):
             config.window.flip()                                                        # relevant frames now ended, so stop drawing the fixation
