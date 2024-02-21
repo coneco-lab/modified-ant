@@ -11,4 +11,5 @@ Le immagini apparterranno a tre categorie:
 La croce sara' sempre presente, mentre gli asterischi e la serie di frecce appariranno e scompariranno. 
 Gli asterischi potranno essere singoli o in coppia.
 
-Premi SPAZIO per vedere degli esempi.
+Premi SPAZIO per vedere degli esempi 
+e muoverti tra di essi. 
