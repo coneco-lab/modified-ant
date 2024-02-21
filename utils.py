@@ -243,8 +243,9 @@ def score_and_save_trial(trial_number, trial_components, dependent_variables, be
                correct,
                reaction_time]
     
-    output_data = pd.Series({key:value for key, value in zip(config.output_variables, outputs)})
+    output_data = pd.DataFrame(data={key:value for key,value in zip(config.output_variables, outputs)},
+                               index=[0])
     output_filename = f"sub-{experiment_info['subject']}_task-{experiment_info['name']}_beh_{trial_number}.tsv"
     output_data.to_csv(path_or_buf=beh_data_folder / output_filename,
-                       sep="\t",
-                       index=True)
+                     sep="\t",
+                     index=False)    
