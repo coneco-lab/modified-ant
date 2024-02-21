@@ -37,7 +37,6 @@ def make_directories(experiment_info):
     Returns:
     text_folder -- the directory of text messages to display (type: str)
     beh_data_folder -- the directory of output behavioural data (type: str)
-    output_filename -- the name of the output table (type: str)
     """
     
     working_dir = Path.cwd() 
@@ -52,8 +51,7 @@ def make_directories(experiment_info):
             folder.mkdir()
         except FileExistsError:
             pass 
-    output_filename = f"sub-{experiment_info['subject']}_task-{experiment_info['name']}_beh.tsv"
-    return text_folder, beh_data_folder, output_filename
+    return text_folder, beh_data_folder
 
 def display_text(file_to_read, window, display_duration):
     """Reads text from an external file and displays it.
@@ -138,13 +136,14 @@ def display_demos(trials_pool, window, demos, demos_frames):
         arrow.setAutoDraw(False)
     config.fixation.setAutoDraw(False)
 
-def run_trials_save_data(trials, response_clock, output_table):
+def run_trials_save_data(trials, response_clock, beh_data_folder, experiment_info):
     """Runs experimental trials and saves dependent variables (response, reaction time).
 
     Parameters:
     trials -- an object that represents all trials and the iteration over them (PsychoPy TrialHandler object)
     response_clock -- the clock that times responses to stimuli (PsychoPy Clock object) 
-    output_table -- the table where to save data (pandas DataFrame)
+    beh_data_folder -- the path to the destination folder for output data (type: str)
+    experiment_info -- experiment metadata (type: dict) 
     """
 
     for trial_number, trial_components in enumerate(trials):
@@ -189,9 +188,10 @@ def run_trials_save_data(trials, response_clock, output_table):
             arrow.setAutoDraw(False)
 
         try:
-            last_fixation_time = 4.5 - float(reaction_time) - config.display_times["initial_fixation"][trial_number]
+            last_fixation_time = config.MAX_TRIAL_DURATION - float(reaction_time) - config.display_times["initial_fixation"][trial_number]
         except TypeError:
-            last_fixation_time = 4.5 - config.display_times["initial_fixation"][trial_number]
+            last_fixation_time = config.MAX_TRIAL_DURATION - config.display_times["initial_fixation"][trial_number]
+            
         last_fixation_frames = int(last_fixation_time*config.monitor_info["refresh_rate_hz"])
         for frame in range(last_fixation_frames):
             config.window.flip()                                                        # relevant frames now ended, so stop drawing the fixation
@@ -202,11 +202,12 @@ def run_trials_save_data(trials, response_clock, output_table):
             score_and_save_trial(trial_number=trial_number,
                                  trial_components=trial_components,
                                  dependent_variables=dependent_variables,
-                                 output_table=output_table)
+                                 beh_data_folder=beh_data_folder,
+                                 experiment_info=experiment_info)
         except AttributeError:
             pass
 
-def score_and_save_trial(trial_number, trial_components, dependent_variables, output_table):
+def score_and_save_trial(trial_number, trial_components, dependent_variables, beh_data_folder, experiment_info):
     """Scores a subject's response (correct, incorrect, miss) and saves it. 
        Kept in a separate function because in the future, these operations
        might be useful outside the trials loop. 
@@ -214,8 +215,9 @@ def score_and_save_trial(trial_number, trial_components, dependent_variables, ou
     Parameters:
     trial_number -- the index of the trial being run (e.g., 0 for the first) (type: int)
     trial_components -- the things that exist in the trial (i.e., stimuli) (type: OrderedDict)
-    dependent_variables -- a container of the trial's dependent variable values (type: dict)   
-    output_table -- the table where to save data (pandas DataFrame)                         
+    dependent_variables -- a container of the trial's dependent variable values (type: dict) 
+    beh_data_folder -- the path to the destination folder for output data (type: str)
+    experiment_info -- experiment metadata (type: dict)                         
     """
 
     response = dependent_variables["response"]
@@ -240,4 +242,9 @@ def score_and_save_trial(trial_number, trial_components, dependent_variables, ou
                response,
                correct,
                reaction_time]
-    output_table.iloc[trial_number] = pd.Series({key:value for key, value in zip(output_table.columns, outputs)})
+    
+    output_data = pd.Series({key:value for key, value in zip(config.output_variables, outputs)})
+    output_filename = f"sub-{experiment_info['subject']}_task-{experiment_info['name']}_beh_{trial_number}.tsv"
+    output_data.to_csv(path_or_buf=beh_data_folder / output_filename,
+                       sep="\t",
+                       index=True)

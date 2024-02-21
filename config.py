@@ -5,6 +5,7 @@ from psychopy import monitors, visual
 conditions_file = "mant-conditions.csv"
 NUMBER_OF_BLOCKS = 9
 TRIALS_PER_BLOCK = 72
+MAX_TRIAL_DURATION = 3.6
 
 output_variables = ["cue_location",
                     "sequence_location",
@@ -44,19 +45,19 @@ display_times = {"instructions": 180,
                  "fixation_demo": 10,
                  "cue_demo": 10,
                  "arrows_demo": 10,        
-                 "initial_fixation": [0.001*random.randrange(1600,2600,100) for trial in range(TRIALS_PER_BLOCK)], 
-                 "later_fixation": 0.8,                              
-                 "cue": 0.1,                                         
-                 "target": 1.7,
+                 "initial_fixation": [0.001*random.randrange(500,1000,1) for trial in range(TRIALS_PER_BLOCK)], 
+                 "cue": 0.1,
+                 "later_fixation": 1.1,                                                                       
+                 "target": 1.1,
                  "end_of_block_text": 60}                                      
 
-frames_per_item = {"fixation_demo": int(display_times["fixation_demo"]*monitor_info["refresh_rate_hz"]),
+frames_per_item = {"instructions":int(display_times["instructions"]*monitor_info["refresh_rate_hz"]),
+                   "fixation_demo": int(display_times["fixation_demo"]*monitor_info["refresh_rate_hz"]),
                    "cue_demo": int(display_times["cue_demo"]*monitor_info["refresh_rate_hz"]),
                    "arrows_demo": int(display_times["arrows_demo"]*monitor_info["refresh_rate_hz"]),
-                   "instructions":int(display_times["instructions"]*monitor_info["refresh_rate_hz"]),
-                   "initial_fixation": [int(time*monitor_info["refresh_rate_hz"]) for time in display_times["initial_fixation"]],   
-                   "later_fixation": int(display_times["later_fixation"]*monitor_info["refresh_rate_hz"]), 
-                   "cue": int(display_times["cue"]*monitor_info["refresh_rate_hz"]),                             
+                   "initial_fixation": [int(round(time*monitor_info["refresh_rate_hz"])) for time in display_times["initial_fixation"]],
+                   "cue": int(display_times["cue"]*monitor_info["refresh_rate_hz"]),
+                   "later_fixation": int(display_times["later_fixation"]*monitor_info["refresh_rate_hz"]),                              
                    "target": int(display_times["target"]*monitor_info["refresh_rate_hz"]),
                    "end_of_block_text": int(display_times["end_of_block_text"]*monitor_info["refresh_rate_hz"])}                
 
