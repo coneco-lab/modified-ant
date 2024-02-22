@@ -16,11 +16,11 @@ output_variables = ["cue_location",
                     "correct",
                     "rt"]
 
-monitor_info = {"name": "lenovo_matteo",
-                "size_pixels": [1366, 768],
-                "width_cm": (34.5),
+monitor_info = {"name": "hp-monitor-eeglab",
+                "size_pixels": [1920,1080],
+                "width_cm": (62),
                 "subject_distance_cm": 65,
-                "refresh_rate_hz": 60}
+                "refresh_rate_hz": 59}
 monitor = monitors.Monitor(name=monitor_info["name"])
 monitor.setSizePix(monitor_info["size_pixels"]) 
 monitor.setWidth(monitor_info["width_cm"]) 
@@ -35,8 +35,8 @@ window = visual.Window(size=monitor.getSizePix(),
                        monitor=monitor.name,
                        color=[0.0039, 0.0039, 0.0039],
                        colorSpace="rgb",
-                       backgroundImage="", 
-                       backgroundFit="none",
+                       #backgroundImage="", 
+                       #backgroundFit="none",
                        blendMode="avg", 
                        useFBO=True,
                        units="deg")

@@ -49,6 +49,7 @@ if experiment_info["subject"] != "": # start experiment only if subject ID has b
     training_trials = data.TrialHandler(trialList=conditions, 
                                         nReps=1)
     utils.run_trials_save_data(trials=training_trials,
+                               elapsed_trials=0,
                                response_clock=response_clock,
                                beh_data_folder=beh_data_folder,
                                experiment_info=experiment_info)
@@ -57,11 +58,12 @@ if experiment_info["subject"] != "": # start experiment only if subject ID has b
                            window=config.window,
                            display_duration=config.frames_per_item["instructions"])
 
-    for block in range(config.NUMBER_OF_BLOCKS):
+    for block_number in range(config.NUMBER_OF_BLOCKS):
         experimental_trials = data.TrialHandler(trialList=conditions, 
-                                                nReps=int(config.TRIALS_PER_BLOCK / len(conditions)))       
-                                  
+                                                nReps=int(config.TRIALS_PER_BLOCK / len(conditions)))
+        elapsed_trials = config.TRIALS_PER_BLOCK*(block_number)                                        
         utils.run_trials_save_data(trials=experimental_trials,
+                                   elapsed_trials=elapsed_trials,
                                    response_clock=response_clock,
                                    beh_data_folder=beh_data_folder,
                                    experiment_info=experiment_info)

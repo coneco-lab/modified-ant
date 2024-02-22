@@ -136,7 +136,7 @@ def display_demos(trials_pool, window, demos, demos_frames):
         arrow.setAutoDraw(False)
     config.fixation.setAutoDraw(False)
 
-def run_trials_save_data(trials, response_clock, beh_data_folder, experiment_info):
+def run_trials_save_data(trials, elapsed_trials, response_clock, beh_data_folder, experiment_info):
     """Runs experimental trials and saves dependent variables (response, reaction time).
 
     Parameters:
@@ -199,7 +199,7 @@ def run_trials_save_data(trials, response_clock, beh_data_folder, experiment_inf
         dependent_variables = dict(response=response,
                                    reaction_time=reaction_time)
         try:
-            score_and_save_trial(trial_number=trial_number,
+            score_and_save_trial(trial_number=trial_number+elapsed_trials,
                                  trial_components=trial_components,
                                  dependent_variables=dependent_variables,
                                  beh_data_folder=beh_data_folder,
