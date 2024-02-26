@@ -1,3 +1,5 @@
+import psychopy
+#psychopy.useVersion("2023.2.3")
 from psychopy import core, data, gui
 
 experiment_info = {"name":"mANT",
