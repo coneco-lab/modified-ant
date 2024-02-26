@@ -77,7 +77,10 @@ def display_text(file_to_read, window, display_duration):
             break
         window.flip()
     instructions.setAutoDraw(False)
-    return response
+    if len(keys)>0:
+        return response
+    else:
+        return None
 
 def display_demos(trials_pool, window, demos, demos_frames):
     """Displays examples of experimental stimuli. 
