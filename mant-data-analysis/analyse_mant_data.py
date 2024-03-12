@@ -1,5 +1,8 @@
 from pathlib import Path
 
+import statsmodels.api as sm
+from statsmodels.formula.api import ols
+
 import analysis_utils as utils
 import analysis_config as config
 
@@ -36,3 +39,8 @@ blockwise_ordered_rts = utils.order_conditions_blockwise(mant_data=mant_data,
 utils.plot_blockwise_boxplots(sample_size=sample_size,
                               blockwise_ordered_rts=blockwise_ordered_rts,
                               figures_savedir=figures_savedir)
+
+data_ready_for_anova = utils.reorder_data_for_anova(all_trials=mant_data)
+ols_model = ols(formula="rt ~ C(cue_type) + C(target_congruent) + C(cue_type):C(target_congruent)", 
+                data=data_ready_for_anova).fit()
+anova_output_table = sm.stats.anova_lm(ols_model, typ=2)
