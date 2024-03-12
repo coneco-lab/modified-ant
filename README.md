@@ -10,6 +10,7 @@ This mANT implementation consists of three code files, plus supporting materials
 - `config.py`: critical variables and class instances, used by `master_script.py` and `utils.py`
 - `mant-conditions.csv`: a `.csv` file containing task condition parameters (one row per condition). Required by PsychoPy 
 - `text-messages`: a folder that contains text messages displayed during the experiment (e.g., instructions) in the form of `.txt` files
+- `mant-data-analysis`: a folder that contains functions to analyse and plot mANT data 
 
 Running `master_script.py` is enough to run the mANT. If you want to modify a critical variable (e.g., the number of experimental blocks) or class instance (e.g., monitor parameters), just change it in `config.py`. If you want to change what happens at any step along the task (e.g., the structure of a trial), act on `utils.py`.
 
@@ -40,10 +41,10 @@ Please preserve the current directory structure to minimize the risk of code bre
 
 # **Planned improvements:**
 
-- This code is being published before piloting, meaning that some task parameters might (and probably will) change (date of publication: December 2023)
+- This code pertains a pilot experiment, meaning that task parameters might change over time 
+    - Coming soon: distinction between timings for use with EEG and timings for use with fMRI (in `config.py`), with conditional logic to switch between them (in `master_script.py`)
 - Add functions to compile `mant-conditions.csv` automatically 
 - Refactor for higher elegance and efficiency (if/as needed)
-- Add code to analyse and visualize output data
 
 --- 
 
@@ -53,6 +54,6 @@ For questions or improvement suggestions, you can:
 - Open an issue at - or send a pull request to - this repository
 - Write `matteo [dot] dematola [at] unitn [dot] it`
 
-Matteo De Matola ([website](https://webapps.unitn.it/du/en/Persona/PER0247884/Pubblicazioni) | [GitHub](https://github.com/matteo-d-m))
+Matteo De Matola ([UniTN](https://webapps.unitn.it/du/en/Persona/PER0247884/Pubblicazioni) | [GitHub](https://github.com/matteo-d-m))
 
-December 2023
+Last updated March 2023
