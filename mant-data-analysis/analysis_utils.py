@@ -73,13 +73,16 @@ def fetch_mant_conditions(all_trials: pd.DataFrame) -> list[pd.DataFrame]:
     conditions -- a list of dataframes, each one containing data for one condition (type: list[pd.DataFrame])
     """
 
-    condition1 = all_trials.loc[(all_trials["cue_type"] == "spatial valid") & (all_trials["target_congruent"] == "yes"),:].reset_index()
-    condition2 = all_trials.loc[(all_trials["cue_type"] == "spatial valid") & (all_trials["target_congruent"] == "no"),:].reset_index()
-    condition3 = all_trials.loc[(all_trials["cue_type"] == "spatial invalid") & (all_trials["target_congruent"] == "yes"),:].reset_index()
-    condition4 = all_trials.loc[(all_trials["cue_type"] == "spatial invalid") & (all_trials["target_congruent"] == "no"),:].reset_index()
-    condition5 = all_trials.loc[(all_trials["cue_type"] == "double") & (all_trials["target_congruent"] == "yes"),:].reset_index()
-    condition6 = all_trials.loc[(all_trials["cue_type"] == "double") & (all_trials["target_congruent"] == "no"),:].reset_index()
+    condition1 = all_trials.loc[(all_trials["cue_type"] == "spatial valid") & (all_trials["target_congruent"] == "yes"),:]
+    condition2 = all_trials.loc[(all_trials["cue_type"] == "spatial valid") & (all_trials["target_congruent"] == "no"),:]
+    condition3 = all_trials.loc[(all_trials["cue_type"] == "spatial invalid") & (all_trials["target_congruent"] == "yes"),:]
+    condition4 = all_trials.loc[(all_trials["cue_type"] == "spatial invalid") & (all_trials["target_congruent"] == "no"),:]
+    condition5 = all_trials.loc[(all_trials["cue_type"] == "double") & (all_trials["target_congruent"] == "yes"),:]
+    condition6 = all_trials.loc[(all_trials["cue_type"] == "double") & (all_trials["target_congruent"] == "no"),:]
     conditions = [condition1,condition2,condition3,condition4,condition5,condition6]
+    for condition in conditions:
+        condition.reset_index(drop=True,
+                              inplace=True)
     return conditions
 
 def get_condition_descriptives(conditions: list[pd.DataFrame], condition_names: list[str]) -> pd.DataFrame: 
@@ -231,7 +234,19 @@ def plot_rt_over_conditions(conditions: list[pd.DataFrame], condition_names: lis
     plt.savefig(figures_savedir / f"rt-conditions-means.pdf",
                 bbox_inches="tight")    
 
-def order_conditions_blockwise(mant_data: pd.DataFrame, number_of_blocks: int, trials_per_block: int) -> list[pd.DataFrame]:
+def order_data_by_conditions(mant_data: pd.DataFrame, condition_names: list[str]):
+    conditions =  fetch_mant_conditions(all_trials=mant_data)
+    labelled_condition_rts = []
+    for condition, condition_name in zip(conditions, condition_names):
+        labelled_condition_rt = pd.DataFrame(condition["rt"]).assign(condition=[condition_name]*len(condition))
+        labelled_condition_rts.append(labelled_condition_rt)
+    ordered_data = pd.concat(objs=labelled_condition_rts,
+                                   axis=0)
+    ordered_data.reset_index(drop=True,
+                                   inplace=True)
+    return ordered_data
+
+def order_conditions_blockwise(mant_data: pd.DataFrame, condition_names: list[str], number_of_blocks: int, trials_per_block: int) -> list[pd.DataFrame]:
     """For each experimental block, creates one dataframe where data from each condition are stored contiguously.
     
     Parameters:
@@ -242,31 +257,27 @@ def order_conditions_blockwise(mant_data: pd.DataFrame, number_of_blocks: int, t
     Returns:
     blockwise_ordered_rts -- a list containing one condition-ordered dataframe per block (type: list[pd.DataFrame]) 
     """
-
+    
     start_slicing_at = 0
     stop_slicing_at = trials_per_block
 
     blockwise_ordered_rts = []
     for _ in range(number_of_blocks):
         unordered_data = mant_data[start_slicing_at:stop_slicing_at]
-        condition1 = unordered_data.loc[(unordered_data["cue_type"] == "spatial valid") & (unordered_data["target_congruent"] == "yes"),:].reset_index()
-        condition2 = unordered_data.loc[(unordered_data["cue_type"] == "spatial valid") & (unordered_data["target_congruent"] == "no"),:].reset_index()
-        condition3 = unordered_data.loc[(unordered_data["cue_type"] == "spatial invalid") & (unordered_data["target_congruent"] == "yes"),:].reset_index()
-        condition4 = unordered_data.loc[(unordered_data["cue_type"] == "spatial invalid") & (unordered_data["target_congruent"] == "no"),:].reset_index()
-        condition5 = unordered_data.loc[(unordered_data["cue_type"] == "double") & (unordered_data["target_congruent"] == "yes"),:].reset_index()
-        condition6 = unordered_data.loc[(unordered_data["cue_type"] == "double") & (unordered_data["target_congruent"] == "no"),:].reset_index()
-        condition_rts = [pd.DataFrame(condition1["rt"]).assign(condition=["VC"]*len(condition1)),
-                         pd.DataFrame(condition2["rt"]).assign(condition=["VI"]*len(condition2)),
-                         pd.DataFrame(condition3["rt"]).assign(condition=["IC"]*len(condition3)),
-                         pd.DataFrame(condition4["rt"]).assign(condition=["II"]*len(condition4)),
-                         pd.DataFrame(condition5["rt"]).assign(condition=["DC"]*len(condition5)),
-                         pd.DataFrame(condition6["rt"]).assign(condition=["DI"]*len(condition6))]
-        ordered_data = pd.concat(objs=condition_rts,
-                                axis=0)
-        blockwise_ordered_rts.append(ordered_data)
+        conditions =  fetch_mant_conditions(all_trials=unordered_data)
+        labelled_condition_rts = []
+        for condition, condition_name in zip(conditions, condition_names):
+            labelled_condition_rt = pd.DataFrame(condition["rt"]).assign(condition=[condition_name]*len(condition))
+            labelled_condition_rts.append(labelled_condition_rt)
+        ordered_block_data = pd.concat(objs=labelled_condition_rts,
+                                        axis=0)
+        ordered_block_data.reset_index(drop=True,
+                                    inplace=True)
+        blockwise_ordered_rts.append(ordered_block_data)
         start_slicing_at += trials_per_block
         stop_slicing_at += trials_per_block
     return blockwise_ordered_rts
+   
 
 def plot_blockwise_boxplots(sample_size: int, blockwise_ordered_rts: list[pd.DataFrame], figures_savedir: Path):
     """Plots reaction times over one panel per block, each one containing one boxplot per condition.
@@ -307,3 +318,23 @@ def plot_blockwise_boxplots(sample_size: int, blockwise_ordered_rts: list[pd.Dat
 
     plt.savefig(figures_savedir / f"rt-boxplots-conditions-in-block.pdf",
                 bbox_inches="tight")    
+    
+def reorder_data_for_anova(all_trials: pd.DataFrame) -> list[pd.DataFrame]:
+    """Extracts condition-specific data from a dataframe that contains data from the whole experiment.
+    
+    Parameters:
+    all_trials -- dataframe containing data from the whole experiment (type: pd.DataFrame)
+    
+    Returns:
+    ordered_data -- the input data, reordered for a 3x2 ANOVA on reaction times with factors 'cue' and 'congruency' (type: pd.DataFrame)
+    """
+    information_of_interest = all_trials.filter(items=["rt","cue_type","target_congruent"])
+    condition1 = information_of_interest.loc[(information_of_interest["cue_type"] == "spatial valid"),:]
+    condition2 = information_of_interest.loc[(information_of_interest["cue_type"] == "spatial invalid"),:]
+    condition3 = information_of_interest.loc[(information_of_interest["cue_type"] == "double"),:]
+    conditions = [condition1,condition2,condition3]    
+    ordered_data = pd.concat(objs=conditions,
+                             axis=0)
+    ordered_data.reset_index(drop=True,
+                             inplace=True)
+    return ordered_data
