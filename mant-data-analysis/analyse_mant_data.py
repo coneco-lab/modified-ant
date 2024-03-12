@@ -13,7 +13,7 @@ figures_savedir = utils.set_output_directories(figures_dir=figures_dir,
 mant_data, sample_size = utils.read_mant_data(data_dir=config.data_dir,
                                               trials_per_subject=config.TRIALS_PER_SUBJECT)
 
-separate_conditions_data = utils.fetch_mant_conditions(mant_data)
+separate_conditions_data = utils.fetch_mant_conditions(all_trials=mant_data)
 descriptives_dataframes = utils.get_condition_descriptives(conditions=separate_conditions_data,
                                                            condition_names=config.abbreviated_condition_names)
 
