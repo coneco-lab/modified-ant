@@ -13,7 +13,7 @@ The three `.py` files contained herein are interrelated:
 
 - Add checks for ANOVA assumptions and ways to cope with their violation 
 - Find better ways to plot mANT data
-    - Lineplots as in Fan et al. ([Fan et al., 2002](https://direct.mit.edu/jocn/article-abstract/14/3/340/3628/Testing-the-Efficiency-and-Independence-of)) with significance markers (if any)
+    - Lineplots as in [Fan et al., 2002](https://direct.mit.edu/jocn/article-abstract/14/3/340/3628/Testing-the-Efficiency-and-Independence-of)with significance markers (if any)
 - Perhaps analyse accuracy data? 
 
 
