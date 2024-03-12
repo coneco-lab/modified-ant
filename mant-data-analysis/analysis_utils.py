@@ -5,7 +5,18 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-def set_output_directories(figures_dir: str, subject: None, group: bool = True) -> Path:
+def set_output_directories(figures_dir: Path, subject: None, group: bool = True) -> Path:
+    """Creates either a subject-specific or a group-specific subdirectory to save figures into. 
+    
+    Parameters:
+    figures_dir -- the parent directory (type: Path object)
+    subject -- whether you want a subject-specific directory (type: None or bool)
+    group -- whether you want a group-specific directory (type: bool)
+    
+    Returns:
+    figures_subdir -- either a subject- or group-specific subdirectory (type: Path object)
+    """
+
     if group and not subject:
         figures_subdir = Path(figures_dir / "group")
     elif subject and not group:
@@ -21,7 +32,18 @@ def set_output_directories(figures_dir: str, subject: None, group: bool = True) 
             pass
     return figures_subdir
 
-def read_mant_data(data_dir: str, trials_per_subject: int = 648) -> tuple[pd.DataFrame, int]:
+def read_mant_data(data_dir: str, trials_per_subject) -> tuple[pd.DataFrame, int]:
+    """Reads mANT data into a pandas dataframe.
+    
+    Parameters:
+    data_dir -- the path to the folder that stores mANT data (type: str)
+    trials_per_subject -- the number of trials for each subject (type: int) (default: 648)
+    
+    Returns:
+    all_trials -- all mANT data found in the 'data_dir' folder (type: pd.DataFrame)
+    sample_size -- the sample size relative to the folder (i.e., 1 for a single subject's folder) (type: int)
+    """
+
     data_folder = Path(data_dir)
     all_output_files = list(data_folder.rglob("*.tsv"))
 
@@ -41,17 +63,36 @@ def read_mant_data(data_dir: str, trials_per_subject: int = 648) -> tuple[pd.Dat
     sample_size = len(all_trials) / trials_per_subject
     return all_trials, sample_size 
 
-def fetch_mant_conditions(data: pd.DataFrame) -> list[pd.DataFrame]:
-    condition1 = data.loc[(data["cue_type"] == "spatial valid") & (data["target_congruent"] == "yes"),:].reset_index()
-    condition2 = data.loc[(data["cue_type"] == "spatial valid") & (data["target_congruent"] == "no"),:].reset_index()
-    condition3 = data.loc[(data["cue_type"] == "spatial invalid") & (data["target_congruent"] == "yes"),:].reset_index()
-    condition4 = data.loc[(data["cue_type"] == "spatial invalid") & (data["target_congruent"] == "no"),:].reset_index()
-    condition5 = data.loc[(data["cue_type"] == "double") & (data["target_congruent"] == "yes"),:].reset_index()
-    condition6 = data.loc[(data["cue_type"] == "double") & (data["target_congruent"] == "no"),:].reset_index()
+def fetch_mant_conditions(all_trials: pd.DataFrame) -> list[pd.DataFrame]:
+    """Extracts condition-specific data from a dataframe that contains data from the whole experiment.
+    
+    Parameters:
+    all_trials -- dataframe containing data from the whole experiment (type: pd.DataFrame)
+    
+    Returns:
+    conditions -- a list of dataframes, each one containing data for one condition (type: list[pd.DataFrame])
+    """
+
+    condition1 = all_trials.loc[(all_trials["cue_type"] == "spatial valid") & (all_trials["target_congruent"] == "yes"),:].reset_index()
+    condition2 = all_trials.loc[(all_trials["cue_type"] == "spatial valid") & (all_trials["target_congruent"] == "no"),:].reset_index()
+    condition3 = all_trials.loc[(all_trials["cue_type"] == "spatial invalid") & (all_trials["target_congruent"] == "yes"),:].reset_index()
+    condition4 = all_trials.loc[(all_trials["cue_type"] == "spatial invalid") & (all_trials["target_congruent"] == "no"),:].reset_index()
+    condition5 = all_trials.loc[(all_trials["cue_type"] == "double") & (all_trials["target_congruent"] == "yes"),:].reset_index()
+    condition6 = all_trials.loc[(all_trials["cue_type"] == "double") & (all_trials["target_congruent"] == "no"),:].reset_index()
     conditions = [condition1,condition2,condition3,condition4,condition5,condition6]
     return conditions
 
 def get_condition_descriptives(conditions: list[pd.DataFrame], condition_names: list[str]) -> pd.DataFrame: 
+    """Computes mean and standard deviation (for reaction times) and accuracy percentage on mANT data.
+    
+    Parameters:
+    conditions -- a list of dataframes, each one containing data for one condition (type: list[pd.DataFrame])
+    condition_names -- a list containing the names of each condition (type: list[str])
+
+    Returns:
+    descriptives_dataframe -- a dataframe that collects all computed statistics (type: pd.DataFrame) 
+    """
+    
     descriptives_dataframe = pd.DataFrame(index=range(len(conditions)),
                                           columns=["condition","accuracy", "mean_rt", "rt_std"])
     for condition_number, condition in enumerate(conditions):
@@ -70,6 +111,16 @@ def plot_reaction_times(title: str,
                         condition_names: list[str],
                         figures_savedir: Path,
                         plot_type: str):
+    """Plots reaction times on either a lineplot, a histogram, or a boxplot.
+    
+    Parameters:
+    title -- the graph's desired title (type: str)
+    conditions -- a list of dataframes, each one containing data for one condition (type: list[pd.DataFrame])
+    condition_names -- a list containing the names of each condition (type: list[str])
+    figures_savedir -- the folder that the final figure should be saved to (type: Path object)
+    plot_type -- whether the plot should be 'line', 'histogram', or 'boxplot' (type: str) 
+    """
+
     plt.rcParams["font.family"] = "monospace"
     fig, axs = plt.subplots(nrows=3,
                             ncols=2,
@@ -133,6 +184,15 @@ def plot_reaction_times(title: str,
                 bbox_inches="tight")
 
 def plot_rt_over_conditions(conditions: list[pd.DataFrame], condition_names: list[str], sample_size: int, figures_savedir: Path):
+    """Plots the mean reaction time (and its standard deviation) for each mANT condition.
+    
+    Parameters:
+    conditions -- a list of dataframes, each one containing data for one condition (type: list[pd.DataFrame])
+    condition_names -- a list containing the names of each condition (type: list[str])
+    sample_size -- the sample size relative to the folder (i.e., 1 for a single subject's folder) (type: int)
+    figures_savedir -- the folder that the final figure should be saved to (type: Path object)
+    """
+
     mean_rt_per_condition = np.empty(shape=(len(conditions)))
     std_deviation_per_condition = np.empty(shape=(len(conditions)))
     for condition_number, condition in enumerate(conditions):
@@ -171,7 +231,18 @@ def plot_rt_over_conditions(conditions: list[pd.DataFrame], condition_names: lis
     plt.savefig(figures_savedir / f"rt-conditions-means.pdf",
                 bbox_inches="tight")    
 
-def order_conditions_blockwise(mant_data: pd.DataFrame, number_of_blocks: int = 9, trials_per_block: int = 72) -> list[pd.DataFrame]:
+def order_conditions_blockwise(mant_data: pd.DataFrame, number_of_blocks: int, trials_per_block: int) -> list[pd.DataFrame]:
+    """For each experimental block, creates one dataframe where data from each condition are stored contiguously.
+    
+    Parameters:
+    mant_data -- data from a whole experimental run (type: pd.DataFrame)
+    number_of_blocks -- the number of experimental blocks (type: int)
+    trials_per_block -- the number of trials per block (type: int)
+    
+    Returns:
+    blockwise_ordered_rts -- a list containing one condition-ordered dataframe per block (type: list[pd.DataFrame]) 
+    """
+
     start_slicing_at = 0
     stop_slicing_at = trials_per_block
 
@@ -198,6 +269,13 @@ def order_conditions_blockwise(mant_data: pd.DataFrame, number_of_blocks: int = 
     return blockwise_ordered_rts
 
 def plot_blockwise_boxplots(sample_size: int, blockwise_ordered_rts: list[pd.DataFrame], figures_savedir: Path):
+    """Plots reaction times over one panel per block, each one containing one boxplot per condition.
+
+    sample_size -- the sample size relative to the folder (i.e., 1 for a single subject's folder) (type: int)
+    blockwise_ordered_rts -- a list containing one condition-ordered dataframe per block (type: list[pd.DataFrame])
+    figures_savedir -- the folder that the final figure should be saved to (type: Path object)
+    """
+
     plt.rcParams["font.family"] = "monospace"
     fig, axs = plt.subplots(nrows=3,
                             ncols=3,
