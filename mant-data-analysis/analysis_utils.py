@@ -234,18 +234,6 @@ def plot_rt_over_conditions(conditions: list[pd.DataFrame], condition_names: lis
     plt.savefig(figures_savedir / f"rt-conditions-means.pdf",
                 bbox_inches="tight")    
 
-def order_data_by_conditions(mant_data: pd.DataFrame, condition_names: list[str]):
-    conditions =  fetch_mant_conditions(all_trials=mant_data)
-    labelled_condition_rts = []
-    for condition, condition_name in zip(conditions, condition_names):
-        labelled_condition_rt = pd.DataFrame(condition["rt"]).assign(condition=[condition_name]*len(condition))
-        labelled_condition_rts.append(labelled_condition_rt)
-    ordered_data = pd.concat(objs=labelled_condition_rts,
-                                   axis=0)
-    ordered_data.reset_index(drop=True,
-                                   inplace=True)
-    return ordered_data
-
 def order_conditions_blockwise(mant_data: pd.DataFrame, condition_names: list[str], number_of_blocks: int, trials_per_block: int) -> list[pd.DataFrame]:
     """For each experimental block, creates one dataframe where data from each condition are stored contiguously.
     
@@ -319,7 +307,7 @@ def plot_blockwise_boxplots(sample_size: int, blockwise_ordered_rts: list[pd.Dat
     plt.savefig(figures_savedir / f"rt-boxplots-conditions-in-block.pdf",
                 bbox_inches="tight")    
     
-def reorder_data_for_anova(all_trials: pd.DataFrame) -> list[pd.DataFrame]:
+def reorder_data_for_anova(all_trials: pd.DataFrame) -> pd.DataFrame:
     """Extracts condition-specific data from a dataframe that contains data from the whole experiment.
     
     Parameters:
@@ -328,6 +316,7 @@ def reorder_data_for_anova(all_trials: pd.DataFrame) -> list[pd.DataFrame]:
     Returns:
     ordered_data -- the input data, reordered for a 3x2 ANOVA on reaction times with factors 'cue' and 'congruency' (type: pd.DataFrame)
     """
+
     information_of_interest = all_trials.filter(items=["rt","cue_type","target_congruent"])
     condition1 = information_of_interest.loc[(information_of_interest["cue_type"] == "spatial valid"),:]
     condition2 = information_of_interest.loc[(information_of_interest["cue_type"] == "spatial invalid"),:]
