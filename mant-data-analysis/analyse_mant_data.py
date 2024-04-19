@@ -10,8 +10,8 @@ working_dir = Path.cwd()
 figures_dir = Path(working_dir / "figures")
 
 figures_savedir = utils.set_output_directories(figures_dir=figures_dir,
-                                               group=True,
-                                               subject=None)
+                                               subject=None,
+                                               group=True)
 
 mant_data, sample_size = utils.read_mant_data(data_dir=config.data_dir,
                                               trials_per_subject=config.TRIALS_PER_SUBJECT)
@@ -33,12 +33,21 @@ utils.plot_rt_over_conditions(conditions=separate_conditions_data,
                               figures_savedir=figures_savedir)
 
 blockwise_ordered_rts = utils.order_conditions_blockwise(mant_data=mant_data,
+                                                         condition_names=config.abbreviated_condition_names,
                                                          number_of_blocks=config.NUMBER_OF_BLOCKS,
                                                          trials_per_block=config.TRIALS_PER_BLOCK)
 
 utils.plot_blockwise_boxplots(sample_size=sample_size,
                               blockwise_ordered_rts=blockwise_ordered_rts,
                               figures_savedir=figures_savedir)
+
+relevant_data = utils.get_only_cues_and_targets(mant_data=mant_data)
+for variable in ["cues","targets"]:
+    utils.plot_target_cue_interactions(mant_data=relevant_data,
+                                       data_id="group",
+                                       on_x_axis=variable,
+                                       sample_size=sample_size,
+                                       figures_savedir=figures_savedir)
 
 data_ready_for_anova = utils.reorder_data_for_anova(all_trials=mant_data)
 ols_model = ols(formula="rt ~ C(cue_type) + C(target_congruent) + C(cue_type):C(target_congruent)", 
