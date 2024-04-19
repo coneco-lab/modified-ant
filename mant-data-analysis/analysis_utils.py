@@ -53,12 +53,12 @@ def read_mant_data(data_dir: str, trials_per_subject) -> tuple[pd.DataFrame, int
                                       sep="\t")
         all_single_trials.append(trial_dataframe)
     all_trials = pd.concat(objs=all_single_trials,
-                        axis=0).reset_index()
+                           axis=0).reset_index()
     del all_single_trials
 
     all_trials.replace(to_replace="none",
-                    value=np.nan,
-                    inplace=True)
+                       value=np.nan,
+                       inplace=True)
     all_trials = all_trials.interpolate()
     sample_size = len(all_trials) / trials_per_subject
     return all_trials, sample_size 
@@ -120,7 +120,7 @@ def plot_reaction_times(title: str,
     title -- the graph's desired title (type: str)
     conditions -- a list of dataframes, each one containing data for one condition (type: list[pd.DataFrame])
     condition_names -- a list containing the names of each condition (type: list[str])
-    figures_savedir -- the folder that the final figure should be saved to (type: Path object)
+    figures_savedir -- where to save the output (type: Path object)
     plot_type -- whether the plot should be 'line', 'histogram', or 'boxplot' (type: str) 
     """
 
@@ -134,14 +134,14 @@ def plot_reaction_times(title: str,
                  fontweight="bold") 
     if plot_type == "line":
         fig.supxlabel(t="Trial",
-                    fontweight="bold")
+                      fontweight="bold")
         fig.supylabel(t="Reaction time (s)",
-                    fontweight="bold")
+                      fontweight="bold")
     elif plot_type == "histogram":
         fig.supxlabel(t="Reaction time (s)",
-              fontweight="bold")
+                      fontweight="bold")
         fig.supylabel(t="Number of occurrences",
-                    fontweight="bold")
+                      fontweight="bold")
     elif plot_type == "boxplot":
         fig.supylabel(t="Reaction time (s)",
                       fontweight="bold")
@@ -154,15 +154,15 @@ def plot_reaction_times(title: str,
         if plot_type == "line":
             plot_filename = "rt-lineplots.pdf"
             current_axis.plot(conditions[i]["rt"],
-                            color="b",
-                            alpha=.6,
-                            label="RT")
+                              color="b",
+                              alpha=.6,
+                              label="RT")
             number_of_trials = len(conditions[i]["rt"])
             mean_over_trials = conditions[i]["rt"].mean()
             current_axis.plot([mean_over_trials for trial in range(number_of_trials)],
-                            color="r",
-                            alpha=.6,
-                            label="mean RT")
+                               color="r",
+                               alpha=.6,
+                               label="mean RT")
             current_axis.legend()
         elif plot_type == "histogram":
             plot_filename = "rt-histograms.pdf"
@@ -186,14 +186,17 @@ def plot_reaction_times(title: str,
     plt.savefig(figures_savedir / plot_filename,
                 bbox_inches="tight")
 
-def plot_rt_over_conditions(conditions: list[pd.DataFrame], condition_names: list[str], sample_size: int, figures_savedir: Path):
+def plot_rt_over_conditions(conditions: list[pd.DataFrame], 
+                            condition_names: list[str],
+                            sample_size: int,
+                            figures_savedir: Path):
     """Plots the mean reaction time (and its standard deviation) for each mANT condition.
     
     Parameters:
     conditions -- a list of dataframes, each one containing data for one condition (type: list[pd.DataFrame])
     condition_names -- a list containing the names of each condition (type: list[str])
     sample_size -- the sample size relative to the folder (i.e., 1 for a single subject's folder) (type: int)
-    figures_savedir -- the folder that the final figure should be saved to (type: Path object)
+    figures_savedir -- where to save the output (type: Path object)
     """
 
     mean_rt_per_condition = np.empty(shape=(len(conditions)))
@@ -234,11 +237,15 @@ def plot_rt_over_conditions(conditions: list[pd.DataFrame], condition_names: lis
     plt.savefig(figures_savedir / f"rt-conditions-means.pdf",
                 bbox_inches="tight")    
 
-def order_conditions_blockwise(mant_data: pd.DataFrame, condition_names: list[str], number_of_blocks: int, trials_per_block: int) -> list[pd.DataFrame]:
+def order_conditions_blockwise(mant_data: pd.DataFrame,
+                               condition_names: list[str],
+                               number_of_blocks: int,
+                               trials_per_block: int) -> list[pd.DataFrame]:
     """For each experimental block, creates one dataframe where data from each condition are stored contiguously.
     
     Parameters:
     mant_data -- data from a whole experimental run (type: pd.DataFrame)
+    condition_names -- a list of condition names (type: list[str])
     number_of_blocks -- the number of experimental blocks (type: int)
     trials_per_block -- the number of trials per block (type: int)
     
@@ -267,12 +274,14 @@ def order_conditions_blockwise(mant_data: pd.DataFrame, condition_names: list[st
     return blockwise_ordered_rts
    
 
-def plot_blockwise_boxplots(sample_size: int, blockwise_ordered_rts: list[pd.DataFrame], figures_savedir: Path):
+def plot_blockwise_boxplots(sample_size: int,
+                            blockwise_ordered_rts: list[pd.DataFrame],
+                            figures_savedir: Path):
     """Plots reaction times over one panel per block, each one containing one boxplot per condition.
 
     sample_size -- the sample size relative to the folder (i.e., 1 for a single subject's folder) (type: int)
     blockwise_ordered_rts -- a list containing one condition-ordered dataframe per block (type: list[pd.DataFrame])
-    figures_savedir -- the folder that the final figure should be saved to (type: Path object)
+    figures_savedir -- where to save the output (type: Path object)
     """
 
     plt.rcParams["font.family"] = "monospace"
@@ -307,6 +316,250 @@ def plot_blockwise_boxplots(sample_size: int, blockwise_ordered_rts: list[pd.Dat
     plt.savefig(figures_savedir / f"rt-boxplots-conditions-in-block.pdf",
                 bbox_inches="tight")    
     
+def get_only_cues_and_targets(mant_data: pd.DataFrame) -> pd.DataFrame:
+    """Extracts reaction times, cue, and target information from mANT data.
+    
+    Parameters: 
+    mant_data -- a dataframe containing mANT data (type: pd.DataFrame)
+    
+    Returns:
+    ordered_data -- a new dataframe containing the information of interest, ordered by target condition
+                    (i.e., one condition before and the other condition after)
+    """
+
+    information_of_interest = mant_data.filter(items=["rt","cue_type","target_congruent"])
+    condition1 = information_of_interest.loc[(information_of_interest["target_congruent"] == "yes"),:]
+    condition2 = information_of_interest.loc[(information_of_interest["target_congruent"] == "no"),:]
+    conditions = [condition1,condition2]    
+    ordered_data = pd.concat(objs=conditions,
+                             axis=0)
+    ordered_data.reset_index(drop=True,
+                             inplace=True)
+    return ordered_data
+
+def plot_target_cue_interactions(mant_data: pd.DataFrame, 
+                                 data_id: str,
+                                 on_x_axis: str,
+                                 sample_size: int,
+                                 figures_savedir: Path):
+    """Plots target-cue interactions in mANT data, with reaction times as dependent variable. 
+    
+    Parameters:
+    mant_data -- a dataframe containing mANT data (type: pd.DataFrame)
+    data_id -- an arbitrary label for the data (e.g., "sub-01" or "group") (type: str)
+    on_x_axis -- what to put on the x axis (either 'targets' or 'cues') (type: str)
+    sample_size -- the sample size (type: int)
+    figures_savedir -- where to save the output (type: Path object)
+    """
+
+    plt.rcParams["font.family"] = "monospace"
+    _, ax = plt.subplots(figsize=(12,8))
+    if on_x_axis == "targets":
+        sns.lineplot(x=mant_data["target_congruent"],
+                     y=mant_data["rt"],
+                     hue=mant_data["cue_type"],
+                     palette="colorblind",
+                     linewidth=1.5,
+                     legend=True,
+                     style=mant_data["cue_type"],
+                     markers=True)
+        ax.set_xticklabels(labels=["Congruent target", "Incongruent target"],
+                           fontweight="bold",
+                           rotation=30);
+    elif on_x_axis == "cues":
+        sns.lineplot(x=mant_data["cue_type"],
+                     y=mant_data["rt"],
+                     hue=mant_data["target_congruent"],
+                     palette="colorblind",
+                     linewidth=1.5,
+                     legend=True,
+                     style=mant_data["target_congruent"],
+                     markers=True)
+        ax.set_xticklabels(labels=["Invalid cue", "Valid cue", "Double cue"],
+                           fontweight="bold",
+                           rotation=30);
+    else:
+        raise ValueError(" 'on_x_axis' can only be 'targets' or 'cues' ")
+    
+    if data_id == "group":
+        ax.set_title(label=f"Reaction time across {on_x_axis} ({data_id}, N={int(sample_size)})",
+                    fontweight="bold");            
+    else:
+        ax.set_title(label=f"Reaction time across {on_x_axis} ({data_id})",
+                     fontweight="bold");
+    ax.set_xlabel(xlabel="");
+    ax.set_ylabel(ylabel="Mean RT (s)",
+                  fontweight="bold");
+    yticks = np.round(np.arange(start=0.4,stop=0.8,step=0.05),2)
+    ax.set_yticks(yticks);
+    ax.set_yticklabels([tick for tick in yticks]);
+    plt.savefig(figures_savedir / f"rt-across-{on_x_axis}-{data_id}.pdf",
+                bbox_inches="tight") 
+
+def separate_preceding_from_following(mant_data: pd.DataFrame) -> tuple[list]:
+    """Separates preceding trials from following trials. 
+    Useful to check for systematic relationships between preceding and following trial types.
+    At every iteration, the current trial is 'preceding' and the next trial is 'following'.
+    This implies that all trials are both preceding and following at some point, except 
+    the first (which is only preceding) and last one (which is only following).
+     
+    Parameters:
+    mant_data -- a dataframe containing mANT data (type: pd.DataFrame)
+    
+    Returns:
+    preceding_trials -- all preceding trials (type: list[pd.DataFrame])
+    following trials -- all following trials (type: list[pd.DataFrame])
+    """
+
+    preceding_trials = []
+    following_trials = []
+    for trial_number, trial in mant_data.iterrows():  
+        try:
+            preceding_trials.append(trial)
+            following_trials.append(mant_data.iloc[trial_number+1])
+        except IndexError:
+            preceding_trials.pop()
+            break     
+    return preceding_trials, following_trials
+
+def count_repetitions(total_trials: int,
+                      preceding_trials: list[pd.DataFrame],
+                      following_trials: list[pd.DataFrame],
+                      number_of_transitions: int):
+    """Counts the number of cases where two consecutive trials have the same type.
+    
+    Parameters:
+    total_trials -- the total number of trials in the experiment (type: int)
+    preceding_trials -- a list of trials to treat as 'preceding' (type: list[pd.DataFrame])
+    following_trials -- a list of trials to treat as 'following' (type: list[pd.DataFrame])
+    number_of_transitions -- the number of transitions between one trial and the next (type: int)
+    """
+
+    repetition_counter = 0
+    for preceding_trial, following_trial in zip(preceding_trials, following_trials):
+        cue_is_same = preceding_trial["cue_type"] == following_trial["cue_type"]
+        target_is_same = preceding_trial["target_congruent"] == following_trial["target_congruent"]
+        if cue_is_same and target_is_same:
+            repetition_counter += 1
+    repetition_probability = repetition_counter / number_of_transitions
+
+    print(f"Total trials: {total_trials}")
+    print(f"Number of repetitions (i.e., cases when two consecutive trials are equal): {repetition_counter}")
+    print(f"Probability that two consecutive trials be equal: {round(repetition_probability,3)}, i.e., {round(repetition_probability*100,3)} %")
+    return repetition_counter, repetition_probability
+
+def recode_trials(trials: list[pd.DataFrame]):
+    """Recodes trials with condition shorthands. Works inplace. 
+    
+    Parameters:
+    trials -- a list of trials to recode (type: list[pd.DataFrame])
+    """
+
+    for trial_number, trial in enumerate(trials):
+        if trial["cue_type"] == "spatial valid" and trial["target_congruent"] == "yes":
+            trials[trial_number] = "VC"
+        elif trial["cue_type"] == "spatial valid" and trial["target_congruent"] == "no":
+            trials[trial_number] = "VI"
+        elif trial["cue_type"] == "spatial invalid" and trial["target_congruent"] == "yes":
+            trials[trial_number] = "IC"
+        elif trial["cue_type"] == "spatial invalid" and trial["target_congruent"] == "no":
+            trials[trial_number] = "II"
+        elif trial["cue_type"] == "double" and trial["target_congruent"] == "yes":
+            trials[trial_number] = "DC"
+        elif trial["cue_type"] == "double" and trial["target_congruent"] == "no":
+            trials[trial_number] = "DI"
+
+def get_preceding_conditions_counts(condition_names: list[str], 
+                                    preceding_trials: list[pd.DataFrame],
+                                    following_trials: list[pd.DataFrame]) -> dict[dict]:
+    """For each condition (i.e., trial type), counts the number of types that it's preceded by any other condition.
+     
+    Parameters:
+    condition_names -- a list of condition names (type: list[str])
+    preceding trials -- a list of trials to treat as 'preceding' (type: list[pd.DataFrame])
+    following_trials -- a list of trials to treat as 'following' (type: list[pd.DataFrame])
+
+    Returns:
+
+    preceding_conditions_counts -- a dictionary of the type: {condition X: {condition Y precedes it: n times}}, for all X,Y
+                                   (type: dict[dict])
+    """
+
+    preceding_conditions_counts = {condition: {condition: 0 for condition in condition_names} for condition in condition_names}
+    for condition in condition_names:
+        condition_location_in_following = [trial_number for trial_number, trial in enumerate(following_trials) if trial == condition]
+        for index in condition_location_in_following:
+            preceding_condition = preceding_trials[index]
+            preceding_conditions_counts[condition][preceding_condition] += 1
+    return preceding_conditions_counts
+
+def compute_mean_preceding_conditions_counts(condition_names: list[str],
+                                             preceding_conditions_counts: list[dict],
+                                             sample_size: int) -> list[np.ndarray]:
+    """Given a list of outputs from 'get_preceding_conditions_counts()' (typically, one per subject), 
+    computes the mean of each count (i.e., how many times each condition is preceded by all others, on average).
+    
+    Parameters:
+    condition_names -- a list of condition names (type: list[str])
+    preceding_conditions_counts -- a list of outputs from 'get_preceding_conditions_counts()' (type: list[dict])
+    sample_size -- the number of subjects to average over (type: int)
+
+    Returns:
+    means -- a list of mean counts (type: list[np.ndarray])
+    """
+
+    means = []
+    for condition in condition_names:
+        empty_array = np.empty(shape=(sample_size,1,len(condition_names)), # in practice: a 1d array with one entry per condition, for each subject 
+                               dtype=np.int8)
+        for item_number, _ in enumerate(preceding_conditions_counts):
+            for value_index, value in enumerate(preceding_conditions_counts[item_number][condition].values()):
+                empty_array[item_number,:,value_index] = value
+            mean_over_subjects = np.mean(empty_array, axis=0)
+        means.append(mean_over_subjects)
+    return means
+
+def plot_preceding_conditions_counts(condition_names: list[str], 
+                                     preceding_conditions_counts, 
+                                     figures_savedir: Path,
+                                     data_id: str):
+    """Plots preceding conditions counts with bar plots. 
+    
+    Parameters:
+    condition_names -- a list of condition names (type: list[str])
+    preceding_conditions_counts -- a container of preceding conditions counts. 
+                                   Can be the output of 'compute_mean_preceding_conditions_counts()' (type: list[np.ndarray])
+                                   or of 'get_preceding_conditions_counts()'(type: [dict[dict]])
+    figures_savedir -- where to save the output (type: Path object)
+    data_id -- an arbitrary label for the data (e.g., "sub-01" or "group") (type: str)
+    """
+    
+    plt.rcParams["font.family"] = "monospace"
+    fig, axs = plt.subplots(nrows=3,
+                            ncols=2,
+                            sharex=True,
+                            sharey=True,
+                            figsize=(12,8))
+    fig.suptitle(t=f"Preceding conditions count ({data_id})",
+                 fontweight="bold")
+    fig.supxlabel(t="Preceding condition",
+                  fontweight="bold")
+    fig.supylabel(t="Number of occurrences",
+                  fontweight="bold")
+    for i in range(axs.size):
+        current_axis = axs.flat[i]
+        if type(preceding_conditions_counts) == dict:
+            current_axis.bar(preceding_conditions_counts[condition_names[i]].keys(),
+                             preceding_conditions_counts[condition_names[i]].values(),
+                             alpha=.6)
+        elif type(preceding_conditions_counts) == list and type(preceding_conditions_counts[i]) == np.ndarray:
+            current_axis.bar(condition_names,
+                             preceding_conditions_counts[i][0],
+                             alpha=.6)
+        current_axis.set(title=f"Condition {condition_names[i]} is preceded by:")
+    plt.savefig(figures_savedir,
+                bbox_inches="tight")
+
 def reorder_data_for_anova(all_trials: pd.DataFrame) -> pd.DataFrame:
     """Extracts condition-specific data from a dataframe that contains data from the whole experiment.
     
