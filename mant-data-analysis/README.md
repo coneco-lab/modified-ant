@@ -1,22 +1,17 @@
 ## **mANT data analysis** ##
 
-This folder contains code to analyse and plot mANT data acquired as per the code contained in its parent folder.
+This folder contains code to analyse and plot mANT data as acquired with the code contained in the parent folder.
 
-The three `.py` files contained herein are interrelated:
+The folder contains four `.py` files:
 - `analysis_utils.py`: a custom Python module that contains functions to plot mANT data, compute summary statistics, and perform an ANOVA on reaction times  
 - `analyse_mant_data.py`: calls `analysis_utils.py`'s functions in the right order
 - `analysis_config.py`: critical variables used by `analyse_mant_data.py` and `analysis_utils.py`
+- `check_repetitions.py`: a Python script to check for systematic relationships between consecutive trials (i.e., whether a given trial type is systematically preceded or followed by a given other). Depends on `analysis_utils.py` and `analysis_config.py`
 
 ---
 
 # **Planned improvements:**
 
 - Add checks for ANOVA assumptions and ways to cope with their violation 
-- Find better ways to plot mANT data
-    - Lineplots as in [Fan et al., 2002](https://direct.mit.edu/jocn/article-abstract/14/3/340/3628/Testing-the-Efficiency-and-Independence-of) with significance markers (if any)
-- Perhaps analyse accuracy data? 
-
-
-
-
-
+- Perhaps analyse accuracy data
+- `analyse_mant_data.py` is too long - find a way to achieve the same results with less code
