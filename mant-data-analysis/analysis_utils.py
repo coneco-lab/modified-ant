@@ -188,6 +188,7 @@ def plot_reaction_times(title: str,
 
 def plot_rt_over_conditions(conditions: list[pd.DataFrame], 
                             condition_names: list[str],
+                            data_id: str,
                             sample_size: int,
                             figures_savedir: Path):
     """Plots the mean reaction time (and its standard deviation) for each mANT condition.
@@ -195,6 +196,7 @@ def plot_rt_over_conditions(conditions: list[pd.DataFrame],
     Parameters:
     conditions -- a list of dataframes, each one containing data for one condition (type: list[pd.DataFrame])
     condition_names -- a list containing the names of each condition (type: list[str])
+    data_id -- an arbitrary label for the data (e.g., "sub-01" or "group") (type: str)
     sample_size -- the sample size relative to the folder (i.e., 1 for a single subject's folder) (type: int)
     figures_savedir -- where to save the output (type: Path object)
     """
@@ -225,7 +227,11 @@ def plot_rt_over_conditions(conditions: list[pd.DataFrame],
             label="grand mean")
     xticks=[n for n in range(len(conditions))]
     yticks=np.round(0.1*np.array([n for n in range(3,10,1)]),1) # set y-axis ticks from 0.3 to 0.9 seconds
-    ax.set(title=f"Mean RT per condition (N={int(sample_size)})",
+    if data_id == "group":
+        title = f"Mean RT per condition (N={int(sample_size)})"
+    else:
+        title = f"Mean RT per condition ({data_id})"
+    ax.set(title=title,
            xlabel="Condition",
            xticks=xticks,
            xticklabels=condition_names,
@@ -274,11 +280,13 @@ def order_conditions_blockwise(mant_data: pd.DataFrame,
     return blockwise_ordered_rts
    
 
-def plot_blockwise_boxplots(sample_size: int,
+def plot_blockwise_boxplots(data_id: str,
+                            sample_size: int,
                             blockwise_ordered_rts: list[pd.DataFrame],
                             figures_savedir: Path):
     """Plots reaction times over one panel per block, each one containing one boxplot per condition.
 
+    data_id -- an arbitrary label for the data (e.g., "sub-01" or "group") (type: str)
     sample_size -- the sample size relative to the folder (i.e., 1 for a single subject's folder) (type: int)
     blockwise_ordered_rts -- a list containing one condition-ordered dataframe per block (type: list[pd.DataFrame])
     figures_savedir -- where to save the output (type: Path object)
@@ -290,9 +298,12 @@ def plot_blockwise_boxplots(sample_size: int,
                             sharex=True,
                             sharey=True,
                             figsize=(12,8))
-
-    fig.suptitle(t=f"Reaction time boxplots per block (N={int(sample_size)})",
-                 fontweight="bold")
+    if data_id == "group":
+        fig.suptitle(t=f"Reaction time boxplots per block (N={int(sample_size)})",
+                    fontweight="bold")
+    else:
+        fig.suptitle(t=f"Reaction time boxplots per block ({data_id})",
+                    fontweight="bold")
     fig.supxlabel(t="Condition",
                   fontweight="bold")
     fig.supylabel(t="Reaction time (s)",
