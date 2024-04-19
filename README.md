@@ -22,11 +22,11 @@ Please preserve the current directory structure to minimize the risk of code bre
 
 # **Dependencies:**
 
-| Language/Package | Version tested on | Suggested installation |
+| Language/Package | Versions tested on | Suggested installation |
 |------------------|-------------------|------------------------|
-|[Python](https://www.python.org/) | 3.9.16 | [Miniconda](https://docs.conda.io/projects/miniconda/en/latest/) |
-|[PsychoPy](https://psychopy.org/) | 2023.2.3 | [Manual installation](https://www.psychopy.org/download.html#manual-installations) |
-|[pandas](https://pandas.pydata.org/) | 1.5.3 | `conda install pandas` |
+|[Python](https://www.python.org/) | 3.9.16, 3.9.18     | [Miniconda](https://docs.conda.io/projects/miniconda/en/latest/) |
+|[PsychoPy](https://psychopy.org/) | 2022.2.5, 2023.2.3 | [Manual installation](https://www.psychopy.org/download.html#manual-installations) |
+|[pandas](https://pandas.pydata.org/) | 1.5.3           | `conda install pandas`                                                             |
 
 # **Installation notes:**
 
