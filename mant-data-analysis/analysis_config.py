@@ -1,5 +1,6 @@
 data_dir = r"C:\Users\user\Documents\phd\year2\ant\attention-network-test\outputs"
 
+SAMPLE_SIZE = 10
 NUMBER_OF_BLOCKS = 9
 TRIALS_PER_BLOCK = 72
 TRIALS_PER_SUBJECT = NUMBER_OF_BLOCKS*TRIALS_PER_BLOCK
