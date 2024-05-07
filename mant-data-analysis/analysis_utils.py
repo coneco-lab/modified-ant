@@ -483,7 +483,7 @@ def recode_trials(trials: list[pd.DataFrame]):
 def get_preceding_conditions_counts(condition_names: list[str], 
                                     preceding_trials: list[pd.DataFrame],
                                     following_trials: list[pd.DataFrame]) -> dict[dict]:
-    """For each condition (i.e., trial type), counts the number of types that it's preceded by any other condition.
+    """For each condition (i.e., trial type), counts the number of times that it's preceded by any other condition.
      
     Parameters:
     condition_names -- a list of condition names (type: list[str])
