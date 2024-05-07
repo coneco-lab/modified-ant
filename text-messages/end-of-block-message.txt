@@ -1,4 +1,0 @@
-Hai finito un blocco dell'esperimento.
-Puoi riposarti per un minuto, al termine del quale partira' il blocco successivo. 
-
-Se non hai bisogno di riposo, premi SPAZIO per ripartire adesso.
