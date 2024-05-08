@@ -7,7 +7,7 @@ This repository contains a modified version of the Attention Network Test ([Fan 
 The repository contains three subfolders:
 - `task-only` contains code to run the mANT in a behaviour-only setting. See its own README for details
 - `task-and-eeg` contains code to run the mANT during electroencephalography (EEG). See its own README for details (in short, the code is the same as in `task-only`, plus some lines to send 8-bit triggers to the EEG recording system)
-- `mant-data-analysis` contains code analyse and plot mANT data 
+- `mant-data-analysis` contains code to analyse and plot mANT data 
 
 Subfolders `task-only` and `task-and-eeg` are independent of each other. 
 
