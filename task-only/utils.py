@@ -39,10 +39,10 @@ def make_directories(experiment_info):
     text_folder -- the directory of text messages to display (type: str)
     beh_data_folder -- the directory of output behavioural data (type: str)
     """
-    
-    working_dir = Path.cwd() 
+
+    working_dir = Path.cwd()
     text_folder = working_dir / "text-messages"
-    output_folder = working_dir / "outputs"
+    output_folder = working_dir.parent / "outputs"
     subject_folder = output_folder / f"sub-{experiment_info['subject']}"
     session_folder = subject_folder / f"ses-{experiment_info['session']}"
     beh_data_folder = session_folder / "beh"
