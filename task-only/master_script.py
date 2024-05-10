@@ -4,12 +4,12 @@ from psychopy import core, data, gui
 
 experiment_info = {"name": "mANT",
                    "subject": "",
-                   "session": "",
+                   "session": "beh",
                    "date": data.getDateStr(),
                    "psychopy_version": "2022.2.5"}
 
 dialogue = gui.DlgFromDict(dictionary=experiment_info,
-                           title="Enter subject ID (e.g., S01) and session ID (e.g., 01)",
+                           title="Enter subject ID (e.g., 01)",
                            sortKeys=False)
 del dialogue
 
