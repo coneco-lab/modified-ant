@@ -94,4 +94,6 @@ where $d$ is the difference between a pin's number as assigned by the software a
 
 $$\text{code(pinN)} = \sum_{i=2}^{N} 2^{i-2}$$
 
+---
+
 [1] Both the DB25 connector on the PC end of the cable and the DB15 connector on the EEG end of the cable have 8 active pins, i.e., the signal travelling along the trigger cable is an 8-bit signal (_"8-bit trigger"_). This means that there are 8 signal carriers (the pins), each of which can be either open (`state=1`) or closed (`state=0`). In turn, this implies that there are $256$ possible state distributions over the 8 pins. Indeed, the number of possible combinations for $n$ elements taken $k$ at a time is always $n^k$. In our case, there are $n = 2$ state values (open, closed) taken $k = 8$ at a time (because there are 8 pins, state values are observed 8 at a time). $2^8 = 256$, so we have 256 possible combinations of open/closed states over the 8 pins.  
