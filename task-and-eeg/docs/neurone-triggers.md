@@ -25,7 +25,7 @@ As of April 2024, the syntax to send one signal along a given pin of the paralle
 
 	from psychopy import parallel
 	port = parallel.ParallelPort(address=<insert address here>)
-	port.setPin(pinNumber=<insert pin number here>, state=1
+	port.setPin(pinNumber=<insert pin number here>, state=1)
 	<code for the experimental event of interest here>
 	port.setPin(pinNumber=<insert same pin number here>, state=0)
 
@@ -52,7 +52,7 @@ In our current set-up, the stimulator receives signals sent over pin 2. If you w
 
 ### Relationship between pin number and event code
 
-All parallel port connections implement a map between a pin's identity and the code that the signal sent through it is assigned on the receiving machine (i.e., the name of the corresponding marker on the EEG trace). Our montage[1] is tailored to the proprietary EEG hardware that we use (Bittium NeurOne) and  is as follows: 
+All parallel port connections implement a map between a pin's identity and the code that the signal sent through it is assigned on the receiving machine (i.e., the name of the corresponding marker on the EEG trace). Our montage[1] is tailored to the proprietary EEG system that we use (Bittium NeurOne) and  is as follows: 
 
 | Stimulus PC output (DB25 connector) | Corresponding EEG system input (DB15 connector) |
 |-------------------------------------|-------------------------------------------------|
@@ -82,9 +82,12 @@ $$2^n, \ \text{where} \ n = \ \text{true pin number} $$
 Opening more pins at the same time results in cumulative codes, i.e., the receiver will encode the first signal as per the rule described above, and all following signals as the sum of their regular code plus all the codes of contemporaneously opened pins. Therefore, opening pins 2, 3 and 4 will result in the following situation:
 
 $$\text{code(pin2)} = 2^0 = 1$$
+
 $$\text{code(pin3)} = \text{code(pin2)} + \text{code(pin3)} = 2^0 + 2^1 = 1 + 2 = 3 $$
+
 $$\text{code(pin4)} = \text{code(pin2)} + \text{code(pin3)} + \text{code(pin4)} = 
 2^0 + 2^1 + 2^2 = 1 + 2 + 4 = 7 $$
+
 
 Which, in general terms, can be written as:
 
