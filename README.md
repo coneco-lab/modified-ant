@@ -38,7 +38,6 @@ The code contained in both subfolders (i.e., `task-only` and `task-and-eeg`) rel
 
 # **Planned improvements:**
 
-- Coming soon: `task-and-fmri` subfolder
 - Add functions to compile `mant-conditions.csv` automatically 
 - Refactor for higher elegance and efficiency (if/as needed)
 
