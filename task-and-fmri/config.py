@@ -57,16 +57,16 @@ frames_per_item = {"instructions":int(display_times["instructions"]*monitor_info
                    "arrows_demo": int(display_times["arrows_demo"]*monitor_info["refresh_rate_hz"]),
                    "initial_fixation": [int(round(time*monitor_info["refresh_rate_hz"])) for time in display_times["initial_fixation"]],
                    "cue": int(display_times["cue"]*monitor_info["refresh_rate_hz"]),
-                   "later_fixation": int(display_times["later_fixation"]*monitor_info["refresh_rate_hz"]),                              
+                   "later_fixation": [int(round(time*monitor_info["refresh_rate_hz"])) for time in display_times["later_fixation"]],                              
                    "target": int(display_times["target"]*monitor_info["refresh_rate_hz"]),
                    "end_of_block_text": int(display_times["end_of_block_text"]*monitor_info["refresh_rate_hz"])}
 
-keylists = {"welcome_message": [6,"escape"],
-            "demos": [6,"escape"],
-            "post_demos": [6,"escape"],
-            "post_training": [6,"escape"],
-            "waiting_for_scanner": [5,"escape"],
-            "end_of_block": [6,"escape"],
+keylists = {"welcome_message": ["6","escape"],
+            "demos": ["6","escape"],
+            "post_demos": ["6","escape"],
+            "post_training": ["6","escape"],
+            "waiting_for_scanner": ["5","escape"],
+            "end_of_block": ["6","escape"],
             "farewell_message": ["escape"]}      
 
 """ Fixation cross vertices in PsychoPy window space """
