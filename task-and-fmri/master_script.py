@@ -1,5 +1,5 @@
-""" CHANGE:
-    1) TIMINGS: calculate the delay of each experimental event w.r.t. to the last detected 5 (i.e., reset a "5 clock" at each 5 and calculate delays w.r.t. to it)
+""" MRI TIMING:
+    calculate the delay of each experimental event w.r.t. to the last detected 5 (i.e., reset a "5 clock" at each 5 and calculate delays w.r.t. to it)
 """
 
 import psychopy
