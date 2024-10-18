@@ -66,6 +66,7 @@ keylists = {"welcome_message": ["6","escape"],
             "post_demos": ["6","escape"],
             "post_training": ["6","escape"],
             "waiting_for_scanner": ["5","escape"],
+            "target": ["1","6", "escape"],
             "end_of_block": ["6","escape"],
             "farewell_message": ["escape"]}      
 
