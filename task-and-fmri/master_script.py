@@ -1,7 +1,3 @@
-""" MRI TIMING:
-    calculate the delay of each experimental event w.r.t. to the last detected 5 (i.e., reset a "5 clock" at each 5 and calculate delays w.r.t. to it)
-"""
-
 import psychopy
 #psychopy.useVersion("2022.2.5")
 from psychopy import core, data, gui
