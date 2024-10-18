@@ -158,9 +158,6 @@ def run_trials_save_data(trials, elapsed_trials, clocks, beh_data_folder, experi
     for trial_number, trial_components in enumerate(trials):
         response = None
         reaction_time = None
-        mri_trigger = event.getKeys(keyList=config.keylists["waiting_for_scanner"])
-        if len(mri_trigger)>0:
-            clocks["mri_scan_clock"].reset
 
         for line in config.asterisk_components:                                         # draw all lines (i.e, the cue's components)
             line.setStart(trial_components[line.name][0])                               # each line has a start 
@@ -182,7 +179,7 @@ def run_trials_save_data(trials, elapsed_trials, clocks, beh_data_folder, experi
         for line in config.asterisk_components:                                         # relevant frames now ended, so stop drawing the asterisk cue
             line.setAutoDraw(False)
         
-        for frame in range(config.frames_per_item["later_fixation"][trial_number]):    # 300 -11800 ms of cross only
+        for frame in range(config.frames_per_item["later_fixation"][trial_number]):    # 300-11800 ms of cross only (nonuniform jitter, 300 is most likely)
             config.window.flip()
 
         for arrow in config.arrows:                                                     # draw the flankers + target sequence automatically...
@@ -193,7 +190,7 @@ def run_trials_save_data(trials, elapsed_trials, clocks, beh_data_folder, experi
         
         for frame in range(config.frames_per_item["target"]):                           # ... on every frame that it must appear on       
             target_time = clocks["mri_scan_clock"].getTime()      
-            response_keys = event.getKeys(keyList=["left","right","escape"])
+            response_keys = event.getKeys(keyList=config.keylists["target"])
             if len(response_keys)>0:
                 response = response_keys[0]
                 if response == "escape":
