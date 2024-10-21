@@ -179,7 +179,7 @@ def run_trials_save_data(trials, elapsed_trials, clocks, beh_data_folder, experi
         for line in config.asterisk_components:                                         # relevant frames now ended, so stop drawing the asterisk cue
             line.setAutoDraw(False)
         
-        for frame in range(config.frames_per_item["later_fixation"][trial_number]):    # 300-11800 ms of cross only (nonuniform jitter, 300 is most likely)
+        for frame in range(config.frames_per_item["later_fixation"][trial_number]):     # 300-11800 ms of cross only (nonuniform jitter, 300 is most likely)
             config.window.flip()
 
         for arrow in config.arrows:                                                     # draw the flankers + target sequence automatically...
@@ -202,31 +202,26 @@ def run_trials_save_data(trials, elapsed_trials, clocks, beh_data_folder, experi
                             
         for arrow in config.arrows:                                                     # relevant frames now ended, so stop drawing the flankers + target sequence 
             arrow.setAutoDraw(False)
-
-        try:
-            last_fixation_time = config.MAX_TRIAL_DURATION - float(reaction_time) - config.display_times["initial_fixation"][trial_number]
-        except TypeError:
-            last_fixation_time = config.MAX_TRIAL_DURATION - config.display_times["initial_fixation"][trial_number]
-            
-        last_fixation_frames = int(last_fixation_time*config.monitor_info["refresh_rate_hz"])
-        for frame in range(last_fixation_frames):
-            config.window.flip()                                                        # relevant frames now ended, so stop drawing the fixation
-        config.fixation.setAutoDraw(False)
+                                                      
+        config.fixation.setAutoDraw(False)                                              # relevant frames now ended, so stop drawing the fixation
         dependent_variables = dict(cue_time=cue_time,
                                    target_time=target_time,
                                    response=response,
                                    reaction_time=reaction_time,
                                    response_time=response_time)
+        jitter_values = dict(pre_cue=config.display_times["initial_fixation"][trial_number],
+                             post_cue=config.display_times["later_fixation"][trial_number])
         try:
             score_and_save_trial(trial_number=trial_number+elapsed_trials,
                                  trial_components=trial_components,
+                                 jitter_values=jitter_values,
                                  dependent_variables=dependent_variables,
                                  beh_data_folder=beh_data_folder,
                                  experiment_info=experiment_info)
         except AttributeError:
             pass
 
-def score_and_save_trial(trial_number, trial_components, dependent_variables, beh_data_folder, experiment_info):
+def score_and_save_trial(trial_number, trial_components, jitter_values, dependent_variables, beh_data_folder, experiment_info):
     """Scores a subject's response (correct, incorrect, miss) and saves it. 
        Kept in a separate function because in the future, these operations
        might be useful outside the trials loop. 
@@ -234,11 +229,14 @@ def score_and_save_trial(trial_number, trial_components, dependent_variables, be
     Parameters:
     trial_number -- the index of the trial being run (e.g., 0 for the first) (type: int)
     trial_components -- the things that exist in the trial (i.e., stimuli) (type: OrderedDict)
+    jitter_values -- the values of the pre- and post-cue jitters (type: dict)
     dependent_variables -- a container of the trial's dependent variable values (type: dict) 
     beh_data_folder -- the path to the destination folder for output data (type: str)
     experiment_info -- experiment metadata (type: dict)                         
     """
 
+    pre_cue_jitter = jitter_values["pre_cue"]
+    post_cue_jitter = jitter_values["post_cue"]
     cue_time = dependent_variables["cue_time"]
     target_time = dependent_variables["target_time"]
     response_time = dependent_variables["response_time"]
@@ -261,6 +259,8 @@ def score_and_save_trial(trial_number, trial_components, dependent_variables, be
                trial_components["cue_type"],
                trial_components["target_congruent"],
                trial_components["target_direction"],
+               pre_cue_jitter, 
+               post_cue_jitter,
                cue_time,
                target_time,
                response_time,

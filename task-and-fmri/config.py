@@ -5,24 +5,26 @@ from psychopy import monitors, visual
 conditions_file = "mant-conditions.csv"
 NUMBER_OF_BLOCKS = 6
 TRIALS_PER_BLOCK = 48
-MAX_TRIAL_DURATION = 54                     # 3600:1000 = x:15000
 
 output_variables = ["cue_location",
                     "sequence_location",
                     "cue_type",
                     "target_congruent",
                     "target_direction",
+                    "pre_cue_jitter",
+                    "post_cue_jitter",
                     "cue_time",
                     "target_time",
                     "response_time",
                     "response",
                     "correct",
                     "rt"]
+
 monitor_info = {"name": "LA2205-monitor-eeglab", #"hp-monitor-eeglab",
                 "size_pixels": [1600,900],       #[1920,1080],
                 "width_cm": (47.5),              #(62),
                 "subject_distance_cm": 65,
-                "refresh_rate_hz": 59}
+                "refresh_rate_hz": 60}
 monitor = monitors.Monitor(name=monitor_info["name"])
 monitor.setSizePix(monitor_info["size_pixels"]) 
 monitor.setWidth(monitor_info["width_cm"]) 
@@ -41,13 +43,16 @@ window = visual.Window(size=monitor.getSizePix(),
                        useFBO=True,
                        units="deg")
 
+possible_initial_fixations = [3000, 3250, 3500, 3750, 4000, 4500, 5000, 5500, 6500, 8000, 10000, 15000]
+possible_later_fixations = [300, 300, 300, 550, 800, 1050, 1550, 2300, 3300, 4800, 6550, 11800]
+
 display_times = {"instructions": 180,
                  "fixation_demo": 10,
                  "cue_demo": 10,
                  "arrows_demo": 10,        
-                 "initial_fixation": [0.001*random.randrange(3000,15000,1) for trial in range(TRIALS_PER_BLOCK)], 
+                 "initial_fixation": [0.001*random.sample(population=possible_initial_fixations, k=1)[0] for trial in range(TRIALS_PER_BLOCK)],
                  "cue": 0.2,
-                 "later_fixation": [0.001*random.randrange(300,11800,1) for trial in range(TRIALS_PER_BLOCK)],                                                                       
+                 "later_fixation": [0.001*random.sample(population=possible_later_fixations, k=1)[0] for trial in range(TRIALS_PER_BLOCK)],                                                                     
                  "target": 2,
                  "end_of_block_text": 3600}                                      
 
