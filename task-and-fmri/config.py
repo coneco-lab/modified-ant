@@ -1,7 +1,8 @@
 import random
 
 from psychopy import monitors, visual
-   
+
+
 conditions_file = "mant-conditions.csv"
 NUMBER_OF_RUNS = 6
 TRIALS_PER_RUN = 48
