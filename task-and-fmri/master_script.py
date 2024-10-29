@@ -67,7 +67,7 @@ if experiment_info["subject"] != "" and experiment_info["run"] != "":
                                display_duration=config.frames_per_item["instructions"],
                                keylist=config.keylists["post_training"])
     
-    """ The code below represents the actual experiment (no instructions, no training). It's for all runs """
+    """ Now we run the actual experiment (no more instructions, no more training) """
 
     experimental_trials = data.TrialHandler(trialList=conditions, 
                                             nReps=int(config.TRIALS_PER_RUN / len(conditions))) 
