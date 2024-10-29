@@ -8,27 +8,6 @@ from psychopy import visual, event
 
 import config
 
-def set_up_output(number_of_blocks, number_of_trials, output_variables):
-    """Creates a list of (n_trials, n_outputs) tables (one per block).
-    Table columns are labelled with the name of the respective output variable.
-    Output tables will be concatenated vertically (i.e., piled up) into a single 
-    (n_trials_across_blocks, n_outputs) table at the end of the experiment. 
-
-    Parameters: 
-    number_of_blocks -- the number of experimental blocks (type: int)
-    number_of_trials -- the number of trials per block (type: int)
-    output_variables -- a list of output variables (type: list)
-
-    Returns:
-    tables -- a list of output tables (one per block) (type: list)
-    """
-
-    tables = []
-    for block in range(number_of_blocks):
-        table = pd.DataFrame(index=range(number_of_trials),
-                             columns=output_variables)
-        tables.append(table)     
-    return tables
 
 def make_directories(experiment_info):
     """Creates a BIDS-style hierarchy of folders.
@@ -46,8 +25,9 @@ def make_directories(experiment_info):
     output_folder = working_dir.parent / "outputs"
     subject_folder = output_folder / f"sub-{experiment_info['subject']}"
     session_folder = subject_folder / f"ses-{experiment_info['session']}"
-    beh_data_folder = session_folder / "beh"
-    folders_to_create = [text_folder, output_folder, subject_folder, session_folder, beh_data_folder]
+    run_folder = session_folder / f"run-{experiment_info['run']}"
+    beh_data_folder = run_folder / "beh"
+    folders_to_create = [text_folder, output_folder, subject_folder, session_folder, run_folder, beh_data_folder]
     for folder in folders_to_create:
         try:
             folder.mkdir()
@@ -143,14 +123,12 @@ def display_demos(trials_pool, window, demos, demos_frames, keylist):
         arrow.setAutoDraw(False)
     config.fixation.setAutoDraw(False)
 
-def run_trials_save_data(trials, elapsed_trials, clocks, beh_data_folder, experiment_info):
+def run_trials_save_data(trials, clocks, beh_data_folder, experiment_info):
     """Runs experimental trials and saves dependent variables (response, reaction time).
 
     Parameters:
     trials -- an object that represents all trials and the iteration over them (PsychoPy TrialHandler object)
-    elapsed_trials -- the number of elapsed trials (type: int)
-    response_clock -- the clock that times responses to stimuli (PsychoPy Clock object) 
-    mri_clock -- the clocl that times events with respect to the beginning of an mri scan repetition 
+    clocks -- a dictionary of clock objects (type: dict[PsychoPy Clock object])
     beh_data_folder -- the path to the destination folder for output data (type: str)
     experiment_info -- experiment metadata (type: dict) 
     """
@@ -212,7 +190,7 @@ def run_trials_save_data(trials, elapsed_trials, clocks, beh_data_folder, experi
         jitter_values = dict(pre_cue=config.display_times["initial_fixation"][trial_number],
                              post_cue=config.display_times["later_fixation"][trial_number])
         try:
-            score_and_save_trial(trial_number=trial_number+elapsed_trials,
+            score_and_save_trial(trial_number=trial_number,
                                  trial_components=trial_components,
                                  jitter_values=jitter_values,
                                  dependent_variables=dependent_variables,
@@ -254,23 +232,33 @@ def score_and_save_trial(trial_number, trial_components, jitter_values, dependen
     else:
         correct = 0
 
-    outputs = [trial_components["cue_location"],
-               trial_components["sequence_location"],
-               trial_components["cue_type"],
-               trial_components["target_congruent"],
-               trial_components["target_direction"],
-               pre_cue_jitter, 
-               post_cue_jitter,
-               cue_time,
-               target_time,
-               response_time,
-               response,
-               correct,
-               reaction_time]
+    all_outputs = [trial_components["cue_location"],
+                   trial_components["sequence_location"],
+                   trial_components["cue_type"],
+                   trial_components["target_congruent"],
+                   trial_components["target_direction"],
+                   pre_cue_jitter, 
+                   post_cue_jitter,
+                   cue_time,
+                   target_time,
+                   response_time,
+                   response,
+                   correct,
+                   reaction_time]
+    event_times = [cue_time,
+                   target_time, 
+                   response_time]
     
-    output_data = pd.DataFrame(data={key:value for key,value in zip(config.output_variables, outputs)},
-                               index=[0])
-    output_filename = f"sub-{experiment_info['subject']}_task-{experiment_info['name']}_beh_{trial_number}.tsv"
-    output_data.to_csv(path_or_buf=beh_data_folder / output_filename,
-                       sep="\t",
-                       index=False)    
+    all_output_data = pd.DataFrame(data={key:value for key,value in zip(config.all_output_variables, all_outputs)},
+                                   index=[0])
+    output_filename = f"sub-{experiment_info['subject']}_task-{experiment_info['name']}_run-{experiment_info["run"]}_beh_{trial_number}.tsv"
+    all_output_data.to_csv(path_or_buf=beh_data_folder / output_filename,
+                           sep="\t",
+                           index=False)    
+    
+    event_timing_data = pd.DataFrame(data={key:value for key,value in zip(config.event_times, event_times)},
+                                     index=[0])
+    output_filename = f"sub-{experiment_info['subject']}_task-{experiment_info['name']}_run-{experiment_info["run"]}_events.tsv"
+    event_timing_data.to_csv(path_or_buf=beh_data_folder / output_filename,
+                           sep="\t",
+                           index=False)    
