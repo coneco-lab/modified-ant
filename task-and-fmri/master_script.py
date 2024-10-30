@@ -8,7 +8,7 @@ experiment_info = {"name": "mANT",
                    "session": "mri",
                    "run": "",
                    "date": data.getDateStr(),
-                   "psychopy_version": "2022.2.5"}
+                   "psychopy_version": "2024.2.2"}
 
 dialogue = gui.DlgFromDict(dictionary=experiment_info,
                            title="Enter subject ID & run number (e.g., 01 & 01)",
