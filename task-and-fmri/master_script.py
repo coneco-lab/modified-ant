@@ -1,5 +1,4 @@
 import psychopy
-#psychopy.useVersion("2022.2.5")
 from psychopy import core, data, gui
 
 
