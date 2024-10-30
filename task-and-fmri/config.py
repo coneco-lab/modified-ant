@@ -9,19 +9,15 @@ training_conditions_file = "mant-training-conditions.csv"
 NUMBER_OF_RUNS = 10
 TRIALS_PER_RUN = 24
 
-all_output_variables = ["cue_location",
-                        "sequence_location",
-                        "cue_type",
-                        "target_congruent",
-                        "target_direction",
-                        "pre_cue_jitter",
-                        "post_cue_jitter",
-                        "cue_time",
-                        "target_time",
-                        "response_time",
-                        "response",
-                        "correct",
-                        "rt"]
+output_variables = ["cue_location",
+                    "sequence_location",
+                    "cue_type",
+                    "target_congruent",
+                    "target_direction",
+                    "response",
+                    "correct",
+                    "rt"]
+
 event_times = ["cue_time",
                "target_time",
                "response_time"]

@@ -21,7 +21,7 @@ if experiment_info["subject"] != "" and experiment_info["run"] != "":
     import utils
     import config
      
-    text_folder, beh_data_folder = utils.make_directories(experiment_info=experiment_info)  
+    text_folder, beh_data_folder, onset_data_folder = utils.make_directories(experiment_info=experiment_info)  
     
     conditions = data.importConditions(config.conditions_file)
     training_conditions = data.importConditions(config.training_conditions_file)
@@ -29,8 +29,8 @@ if experiment_info["subject"] != "" and experiment_info["run"] != "":
     if experiment_info["run"] == "01":           
         """ Instruction messages and training trials are only for the first run """  
 
-        clocks = dict(response_clock=core.Clock(),
-                      mri_scan_clock=core.Clock())
+        mri_clock = core.Clock()
+        subject_clock = core.Clock()
 
         utils.display_text(file_to_read=text_folder / "welcome-message.txt", 
                            window=config.window,
@@ -59,8 +59,9 @@ if experiment_info["subject"] != "" and experiment_info["run"] != "":
                                             nReps=1)
                                             
         utils.run_trials_save_data(trials=training_trials,
-                                   clocks=clocks,
-                                   beh_data_folder=beh_data_folder,
+                                   mri_clock=mri_clock,
+                                   subject_clock=subject_clock,
+                                   destination_folders=[beh_data_folder, onset_data_folder],
                                    experiment_info=experiment_info)
         
         _ = utils.display_text(file_to_read=text_folder / "post-training-message.txt", 
@@ -78,12 +79,13 @@ if experiment_info["subject"] != "" and experiment_info["run"] != "":
                            display_duration=config.frames_per_item["instructions"],
                            keylist=config.keylists["waiting_for_scanner"])
 
-    clocks = dict(response_clock=core.Clock(),
-                  mri_scan_clock=core.Clock())
+    mri_clock = core.Clock()
+    subject_clock = core.Clock()
         
     utils.run_trials_save_data(trials=experimental_trials,
-                               clocks=clocks,
-                               beh_data_folder=beh_data_folder,
+                               mri_clock=mri_clock,
+                               subject_clock=subject_clock,
+                               destination_folders=[beh_data_folder, onset_data_folder],
                                experiment_info=experiment_info)
     
     if experiment_info["run"] != f"0{config.NUMBER_OF_RUNS}":

@@ -27,13 +27,20 @@ def make_directories(experiment_info):
     session_folder = subject_folder / f"ses-{experiment_info['session']}"
     run_folder = session_folder / f"run-{experiment_info['run']}"
     beh_data_folder = run_folder / "beh"
-    folders_to_create = [text_folder, output_folder, subject_folder, session_folder, run_folder, beh_data_folder]
+    onset_data_folder = run_folder / "onsets"
+    folders_to_create = [text_folder, 
+                         output_folder,
+                         subject_folder,
+                         session_folder,
+                         run_folder,
+                         beh_data_folder,
+                         onset_data_folder]
     for folder in folders_to_create:
         try:
             folder.mkdir()
         except FileExistsError:
             pass 
-    return text_folder, beh_data_folder
+    return text_folder, beh_data_folder, onset_data_folder
 
 def display_text(file_to_read, window, display_duration, keylist):
     """Reads text from an external file and displays it.
@@ -123,13 +130,15 @@ def display_demos(trials_pool, window, demos, demos_frames, keylist):
         arrow.setAutoDraw(False)
     config.fixation.setAutoDraw(False)
 
-def run_trials_save_data(trials, clocks, beh_data_folder, experiment_info):
+def run_trials_save_data(trials, mri_clock, subject_clock, destination_folders, experiment_info):
     """Runs experimental trials and saves dependent variables (response, reaction time).
 
     Parameters:
     trials -- an object that represents all trials and the iteration over them (PsychoPy TrialHandler object)
+    mri_clock -- the clock that times stimuli w.r.t. to the beginning of an MRI run (PsychoPy Clock object)
+    subject_clock -- the clock that times subject responses (PsychoPy Clock object)
     clocks -- a dictionary of clock objects (type: dict[PsychoPy Clock object])
-    beh_data_folder -- the path to the destination folder for output data (type: str)
+    destination_folders -- the paths to the destination folders for behavioural and onset data/metadata (type: list[str])
     experiment_info -- experiment metadata (type: dict) 
     """
     
@@ -151,7 +160,8 @@ def run_trials_save_data(trials, clocks, beh_data_folder, experiment_info):
             line.setAutoDraw(True)
         
         for frame in range(config.frames_per_item["cue"]):                              # ... on every frame that it must appear on
-            cue_time = clocks["mri_scan_clock"].getTime()
+            if frame == 0:
+                cue_onset = mri_clock.getTime()
             config.window.flip()
             
         for line in config.asterisk_components:                                         # relevant frames now ended, so stop drawing the asterisk cue
@@ -163,18 +173,19 @@ def run_trials_save_data(trials, clocks, beh_data_folder, experiment_info):
         for arrow in config.arrows:                                                     # draw the flankers + target sequence automatically...
             arrow.setAutoDraw(True)
             
-        config.window.callOnFlip(clocks["response_clock"].reset)
+        config.window.callOnFlip(subject_clock.reset)
         event.clearEvents()
         
-        for frame in range(config.frames_per_item["target"]):                           # ... on every frame that it must appear on       
-            target_time = clocks["mri_scan_clock"].getTime()      
+        for frame in range(config.frames_per_item["target"]):                           # ... on every frame that it must appear on     
+            if frame == 0:  
+                target_onset = mri_clock.getTime()      
             response_keys = event.getKeys(keyList=config.keylists["target"])
             if len(response_keys)>0:
                 response = response_keys[0]
                 if response == "escape":
                     trials.finished = True
-                reaction_time = clocks["response_clock"].getTime()
-                response_time = clocks["mri_scan_clock"].getTime()
+                reaction_time = subject_clock.getTime()
+                response_onset = mri_clock.getTime()
                 break
             config.window.flip()
                             
@@ -182,48 +193,53 @@ def run_trials_save_data(trials, clocks, beh_data_folder, experiment_info):
             arrow.setAutoDraw(False)
                                                       
         config.fixation.setAutoDraw(False)                                              # relevant frames now ended, so stop drawing the fixation
-        dependent_variables = dict(cue_time=cue_time,
-                                   target_time=target_time,
-                                   response=response,
-                                   reaction_time=reaction_time,
-                                   response_time=response_time)
+
         jitter_values = dict(pre_cue=config.display_times["initial_fixation"][trial_number],
                              post_cue=config.display_times["later_fixation"][trial_number])
-        try:
-            score_and_save_trial(trial_number=trial_number,
-                                 trial_components=trial_components,
-                                 jitter_values=jitter_values,
-                                 dependent_variables=dependent_variables,
-                                 beh_data_folder=beh_data_folder,
-                                 experiment_info=experiment_info)
-        except AttributeError:
-            pass
+        dependent_variables = dict(response=response,
+                                   reaction_time=reaction_time)
+        onsets = dict(cue_onset=cue_onset,
+                      target_onset=target_onset,
+                      response_onset=response_onset)
+        
+        # try:
+        #     score_and_save_trial(trial_number=trial_number,
+        #                          trial_components=trial_components,
+        #                          jitter_values=jitter_values,
+        #                          dependent_variables=dependent_variables,
+        #                          beh_data_folder=beh_data_folder,
+        #                          experiment_info=experiment_info)
+        # except AttributeError:
+        #     pass
 
-def score_and_save_trial(trial_number, trial_components, jitter_values, dependent_variables, beh_data_folder, experiment_info):
+        try:
+            behavioural_data_metadata = score_trial(trial_components=trial_components,
+                                                    dependent_variables=dependent_variables)
+            behavioural_data_metadata = {key:value for key,value in zip(config.output_variables, behavioural_data_metadata)}
+            save_trial(trial_number=trial_number,
+                       data_to_save=[jitter_values | behavioural_data_metadata,onsets],
+                       data_types=["beh","onsets"],
+                       destination_folders=destination_folders,
+                       experiment_info=experiment_info)
+        except AttributeError:
+            pass       
+
+def score_trial(trial_components, dependent_variables):
     """Scores a subject's response (correct, incorrect, miss) and saves it. 
-       Kept in a separate function because in the future, these operations
-       might be useful outside the trials loop. 
 
     Parameters:
-    trial_number -- the index of the trial being run (e.g., 0 for the first) (type: int)
     trial_components -- the things that exist in the trial (i.e., stimuli) (type: OrderedDict)
-    jitter_values -- the values of the pre- and post-cue jitters (type: dict)
     dependent_variables -- a container of the trial's dependent variable values (type: dict) 
     beh_data_folder -- the path to the destination folder for output data (type: str)
     experiment_info -- experiment metadata (type: dict)                         
     """
 
-    pre_cue_jitter = jitter_values["pre_cue"]
-    post_cue_jitter = jitter_values["post_cue"]
-    cue_time = dependent_variables["cue_time"]
-    target_time = dependent_variables["target_time"]
-    response_time = dependent_variables["response_time"]
     response = dependent_variables["response"]
     reaction_time = dependent_variables["reaction_time"]
 
-    if trial_components["target_direction"] == "left" and response == "left":
+    if trial_components["target_direction"] == "left" and response == "1":
         correct = 1
-    elif trial_components["target_direction"] == "right" and response == "right":
+    elif trial_components["target_direction"] == "right" and response == "6":
         correct = 1        
     elif response == None:
         response = "miss"
@@ -232,33 +248,33 @@ def score_and_save_trial(trial_number, trial_components, jitter_values, dependen
     else:
         correct = 0
 
-    all_outputs = [trial_components["cue_location"],
-                   trial_components["sequence_location"],
-                   trial_components["cue_type"],
-                   trial_components["target_congruent"],
-                   trial_components["target_direction"],
-                   pre_cue_jitter, 
-                   post_cue_jitter,
-                   cue_time,
-                   target_time,
-                   response_time,
-                   response,
-                   correct,
-                   reaction_time]
-    event_times = [cue_time,
-                   target_time, 
-                   response_time]
+    behavioural_data_metadata = [trial_components["cue_location"],
+                                 trial_components["sequence_location"],
+                                 trial_components["cue_type"],
+                                 trial_components["target_congruent"],
+                                 trial_components["target_direction"],
+                                 response,
+                                 correct,
+                                 reaction_time]
+    return behavioural_data_metadata
     
-    all_output_data = pd.DataFrame(data={key:value for key,value in zip(config.all_output_variables, all_outputs)},
-                                   index=[0])
-    output_filename = f"sub-{experiment_info['subject']}_task-{experiment_info['name']}_run-{experiment_info['run']}_beh_{trial_number}.tsv"
-    all_output_data.to_csv(path_or_buf=beh_data_folder / output_filename,
-                           sep="\t",
-                           index=False)    
-    
-    event_timing_data = pd.DataFrame(data={key:value for key,value in zip(config.event_times, event_times)},
-                                     index=[0])
-    output_filename = f"sub-{experiment_info['subject']}_task-{experiment_info['name']}_run-{experiment_info['run']}_{trial_number}_events.tsv"
-    event_timing_data.to_csv(path_or_buf=beh_data_folder / output_filename,
-                             sep="\t",
-                             index=False)    
+def save_trial(trial_number, data_to_save, data_types, destination_folders, experiment_info):
+    """Saves all trial information to disk.
+
+    Parameters:
+    trial_number -- the index of the trial being run (e.g., 0 for the first) (type: int)
+    data_to_save -- a list of data to save (type: list[dict])
+    data_types -- a list of strings that identify the data to save (type: list[str])
+    destination_folders -- a list of destination folders for the data type: list[Path]
+    experiment_info -- experiment metadata (type: dict)                         
+    """
+
+    for data, data_type, destination in zip(data_to_save, data_types, destination_folders):
+        if type(data) is not dict:
+            raise TypeError("Data should be organised as a dictionary of type 'variable: values'")
+        dataframe = pd.DataFrame(data=data, 
+                                 index=[0])
+        output_filename = f"sub-{experiment_info['subject']}_task-{experiment_info['name']}_run-{experiment_info['run']}_{data_type}_{trial_number}.tsv"
+        dataframe.to_csv(path_or_buf=destination / output_filename,
+                         sep="\t",
+                         index=False)            
