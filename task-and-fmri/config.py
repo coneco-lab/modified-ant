@@ -4,8 +4,10 @@ from psychopy import monitors, visual
 
 
 conditions_file = "mant-conditions.csv"
-NUMBER_OF_RUNS = 6
-TRIALS_PER_RUN = 48
+training_conditions_file = "mant-training-conditions.csv"
+
+NUMBER_OF_RUNS = 10
+TRIALS_PER_RUN = 24
 
 all_output_variables = ["cue_location",
                         "sequence_location",

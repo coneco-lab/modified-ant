@@ -24,6 +24,7 @@ if experiment_info["subject"] != "" and experiment_info["run"] != "":
     text_folder, beh_data_folder = utils.make_directories(experiment_info=experiment_info)  
     
     conditions = data.importConditions(config.conditions_file)
+    training_conditions = data.importConditions(config.training_conditions_file)
 
     if experiment_info["run"] == "01":           
         """ Instruction messages and training trials are only for the first run """  
@@ -54,7 +55,7 @@ if experiment_info["subject"] != "" and experiment_info["run"] != "":
                                display_duration=config.frames_per_item["instructions"], 
                                keylist=config.keylists["post_demos"])
         
-        training_trials = data.TrialHandler(trialList=conditions, 
+        training_trials = data.TrialHandler(trialList=training_conditions, 
                                             nReps=1)
                                             
         utils.run_trials_save_data(trials=training_trials,
