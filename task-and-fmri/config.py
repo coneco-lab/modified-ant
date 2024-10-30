@@ -24,10 +24,10 @@ event_times = ["cue_time",
                "target_time",
                "response_time"]
 
-monitor_info = {"name": "LA2205-monitor-eeglab", #"hp-monitor-eeglab",
-                "size_pixels": [1600,900],       #[1920,1080],
-                "width_cm": (47.5),              #(62),
-                "subject_distance_cm": 65,
+monitor_info = {"name": "mri-scanner-monitor", 
+                "size_pixels": [3840,2160],       
+                "width_cm": (87.8),              
+                "subject_distance_cm": 159,
                 "refresh_rate_hz": 60}
 monitor = monitors.Monitor(name=monitor_info["name"])
 monitor.setSizePix(monitor_info["size_pixels"]) 
