@@ -251,14 +251,14 @@ def score_and_save_trial(trial_number, trial_components, jitter_values, dependen
     
     all_output_data = pd.DataFrame(data={key:value for key,value in zip(config.all_output_variables, all_outputs)},
                                    index=[0])
-    output_filename = f"sub-{experiment_info['subject']}_task-{experiment_info['name']}_run-{experiment_info["run"]}_beh_{trial_number}.tsv"
+    output_filename = f"sub-{experiment_info['subject']}_task-{experiment_info['name']}_run-{experiment_info['run']}_beh_{trial_number}.tsv"
     all_output_data.to_csv(path_or_buf=beh_data_folder / output_filename,
                            sep="\t",
                            index=False)    
     
     event_timing_data = pd.DataFrame(data={key:value for key,value in zip(config.event_times, event_times)},
                                      index=[0])
-    output_filename = f"sub-{experiment_info['subject']}_task-{experiment_info['name']}_run-{experiment_info["run"]}_events.tsv"
+    output_filename = f"sub-{experiment_info['subject']}_task-{experiment_info['name']}_run-{experiment_info['run']}_{trial_number}_events.tsv"
     event_timing_data.to_csv(path_or_buf=beh_data_folder / output_filename,
-                           sep="\t",
-                           index=False)    
+                             sep="\t",
+                             index=False)    
