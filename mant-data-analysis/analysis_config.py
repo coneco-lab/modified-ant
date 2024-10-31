@@ -1,8 +1,8 @@
-data_dir = r"C:\Users\user\Documents\phd\year2\ant\attention-network-test\outputs"
+data_dir = "/home/matteo/Documents/phd/year2/ant/attention-network-test/outputs/sub-p01"
 
-SAMPLE_SIZE = 10
-NUMBER_OF_BLOCKS = 9
-TRIALS_PER_BLOCK = 72
+SAMPLE_SIZE = 1
+NUMBER_OF_BLOCKS = 5
+TRIALS_PER_BLOCK = 48
 TRIALS_PER_SUBJECT = NUMBER_OF_BLOCKS*TRIALS_PER_BLOCK
 
 condition_names = ["Valid cue, congruent target",
@@ -26,3 +26,6 @@ plot_types = ["line",
 plot_titles = ["Reaction times over trials per condition",
                "Reaction time histogram per condition",
                "Reaction time boxplot per condition"]
+
+blockwise_boxplots_rows = 1
+blockwise_boxplots_cols = 5
