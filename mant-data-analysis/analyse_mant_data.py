@@ -18,7 +18,7 @@ for subject_number in range(1,config.SAMPLE_SIZE+1):
                                                    subject=subject_id,
                                                    group=False)
 
-    mant_data, _ = utils.read_mant_data(data_dir=config.data_dir + f"/{subject_id}",
+    mant_data, _ = utils.read_mant_data(data_dir=config.data_dir,   # + f"/{subject_id}",
                                         trials_per_subject=config.TRIALS_PER_SUBJECT)
 
     separate_conditions_data = utils.fetch_mant_conditions(all_trials=mant_data)
@@ -43,7 +43,9 @@ for subject_number in range(1,config.SAMPLE_SIZE+1):
                                                              number_of_blocks=config.NUMBER_OF_BLOCKS,
                                                              trials_per_block=config.TRIALS_PER_BLOCK)
 
-    utils.plot_blockwise_boxplots(data_id=subject_id,
+    utils.plot_blockwise_boxplots(nrows=config.blockwise_boxplots_rows,
+                                  ncols=config.blockwise_boxplots_cols,
+                                  data_id=subject_id,
                                   sample_size=None,
                                   blockwise_ordered_rts=blockwise_ordered_rts,
                                   figures_savedir=figures_savedir)
@@ -89,7 +91,9 @@ blockwise_ordered_rts = utils.order_conditions_blockwise(mant_data=mant_data,
                                                          number_of_blocks=config.NUMBER_OF_BLOCKS,
                                                          trials_per_block=config.TRIALS_PER_BLOCK)
 
-utils.plot_blockwise_boxplots(data_id="group",
+utils.plot_blockwise_boxplots(nrows=config.blockwise_boxplots_rows,
+                              ncols=config.blockwise_boxplots_cols,
+                              data_id="group",
                               sample_size=sample_size,
                               blockwise_ordered_rts=blockwise_ordered_rts,
                               figures_savedir=figures_savedir)
