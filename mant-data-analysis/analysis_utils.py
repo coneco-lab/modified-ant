@@ -44,8 +44,8 @@ def read_mant_data(data_dir: str, trials_per_subject) -> tuple[pd.DataFrame, int
     sample_size -- the sample size relative to the folder (i.e., 1 for a single subject's folder) (type: int)
     """
 
-    data_folder = Path(data_dir)
-    all_output_files = list(data_folder.rglob("*.tsv"))
+    data_dir = Path(data_dir)
+    all_output_files = sorted(data_dir.rglob("*beh*.tsv"))
 
     all_single_trials = []
     for file in all_output_files:
@@ -271,7 +271,7 @@ def order_conditions_blockwise(mant_data: pd.DataFrame,
             labelled_condition_rt = pd.DataFrame(condition["rt"]).assign(condition=[condition_name]*len(condition))
             labelled_condition_rts.append(labelled_condition_rt)
         ordered_block_data = pd.concat(objs=labelled_condition_rts,
-                                        axis=0)
+                                       axis=0)
         ordered_block_data.reset_index(drop=True,
                                     inplace=True)
         blockwise_ordered_rts.append(ordered_block_data)
@@ -280,12 +280,16 @@ def order_conditions_blockwise(mant_data: pd.DataFrame,
     return blockwise_ordered_rts
    
 
-def plot_blockwise_boxplots(data_id: str,
+def plot_blockwise_boxplots(nrows: int,
+                            ncols: int,
+                            data_id: str,
                             sample_size: int,
                             blockwise_ordered_rts: list[pd.DataFrame],
                             figures_savedir: Path):
     """Plots reaction times over one panel per block, each one containing one boxplot per condition.
 
+    nrows -- the number of plots per row (type: int)
+    ncols -- the numbr of plots per column (type: int). nrows x ncols == n_blocks
     data_id -- an arbitrary label for the data (e.g., "sub-01" or "group") (type: str)
     sample_size -- the sample size relative to the folder (i.e., 1 for a single subject's folder) (type: int)
     blockwise_ordered_rts -- a list containing one condition-ordered dataframe per block (type: list[pd.DataFrame])
@@ -293,8 +297,8 @@ def plot_blockwise_boxplots(data_id: str,
     """
 
     plt.rcParams["font.family"] = "monospace"
-    fig, axs = plt.subplots(nrows=3,
-                            ncols=3,
+    fig, axs = plt.subplots(nrows=nrows,
+                            ncols=ncols,
                             sharex=True,
                             sharey=True,
                             figsize=(12,8))
