@@ -202,16 +202,6 @@ def run_trials_save_data(trials, mri_clock, subject_clock, destination_folders, 
                       target_onset=target_onset,
                       response_onset=response_onset)
         
-        # try:
-        #     score_and_save_trial(trial_number=trial_number,
-        #                          trial_components=trial_components,
-        #                          jitter_values=jitter_values,
-        #                          dependent_variables=dependent_variables,
-        #                          beh_data_folder=beh_data_folder,
-        #                          experiment_info=experiment_info)
-        # except AttributeError:
-        #     pass
-
         try:
             behavioural_data_metadata = score_trial(trial_components=trial_components,
                                                     dependent_variables=dependent_variables)
