@@ -45,6 +45,7 @@ window = visual.Window(size=monitor.getSizePix(),
                        useFBO=True,
                        units="deg")
 
+""" Lists of fixation values as per Fan et al. (2005) """
 possible_initial_fixations = [3000, 3250, 3500, 3750, 4000, 4500, 5000, 5500, 6500, 8000, 10000, 15000]
 possible_later_fixations = [300, 300, 300, 550, 800, 1050, 1550, 2300, 3300, 4800, 6550, 11800]
 
