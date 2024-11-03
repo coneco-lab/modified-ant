@@ -153,7 +153,7 @@ def run_trials_save_data(trials, mri_clock, subject_clock, destination_folders, 
             arrow.setVertices(trial_components[arrow.name])                             # arrows are a bit complex, so I defined them with custom vertices
 
         config.fixation.setAutoDraw(True)                                               # automatically draw the fixation 
-        for frame in range(config.frames_per_item["initial_fixation"][trial_number]):   # on every frame that it must appear on
+        for frame in range(config.frames_per_item["initial_fixation"][trial_number]):   # on every frame that it must appear on (nonuniform jitter between 3 and 15 s)
             config.window.flip()
 
         for line in config.asterisk_components:                                         # automatically draw the asterisk cue...
