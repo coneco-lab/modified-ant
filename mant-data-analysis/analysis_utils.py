@@ -46,7 +46,7 @@ def read_mant_data(data_dir: str, trials_per_subject) -> tuple[pd.DataFrame, int
 
     data_dir = Path(data_dir)
     all_output_files = sorted(data_dir.rglob("*beh*.tsv"),
-                              key=lambda path : int(path.stem.rsplit("_", 1)[1]))
+                              key=lambda path : path.stem.rsplit("_")[2])
 
     all_single_trials = []
     for file in all_output_files:
