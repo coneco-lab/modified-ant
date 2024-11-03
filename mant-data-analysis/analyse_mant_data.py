@@ -19,7 +19,8 @@ for subject_number in range(1,config.SAMPLE_SIZE+1):
                                                    group=False)
 
     mant_data, _ = utils.read_mant_data(data_dir=config.data_dir,   # + f"/{subject_id}",
-                                        trials_per_subject=config.TRIALS_PER_SUBJECT)
+                                        trials_per_subject=config.TRIALS_PER_SUBJECT,
+                                        sort_key=lambda path : path.stem.rsplit("_")[2])
 
     separate_conditions_data = utils.fetch_mant_conditions(all_trials=mant_data)
     descriptives_dataframes = utils.get_condition_descriptives(conditions=separate_conditions_data,

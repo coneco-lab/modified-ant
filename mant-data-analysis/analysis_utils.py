@@ -32,12 +32,13 @@ def set_output_directories(figures_dir: Path, subject: None, group: bool = True)
             pass
     return figures_subdir
 
-def read_mant_data(data_dir: str, trials_per_subject) -> tuple[pd.DataFrame, int]:
+def read_mant_data(data_dir: str, trials_per_subject: int, sort_key) -> tuple[pd.DataFrame, int]:
     """Reads mANT data into a pandas dataframe.
     
     Parameters:
     data_dir -- the path to the folder that stores mANT data (type: str)
-    trials_per_subject -- the number of trials for each subject (type: int) (default: 648)
+    trials_per_subject -- the number of trials for each subject (type: int) 
+    sort_key -- the criterion to sort files before reading them (e.g., by run vs. by trial) (lambda function)
     
     Returns:
     all_trials -- all mANT data found in the 'data_dir' folder (type: pd.DataFrame)
@@ -46,7 +47,7 @@ def read_mant_data(data_dir: str, trials_per_subject) -> tuple[pd.DataFrame, int
 
     data_dir = Path(data_dir)
     all_output_files = sorted(data_dir.rglob("*beh*.tsv"),
-                              key=lambda path : path.stem.rsplit("_")[2])
+                              key=sort_key)
 
     all_single_trials = []
     for file in all_output_files:
