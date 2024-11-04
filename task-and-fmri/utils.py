@@ -181,11 +181,11 @@ def run_trials_save_data(trials, mri_clock, subject_clock, destination_folders, 
                 target_onset = mri_clock.getTime()      
             response_keys = event.getKeys(keyList=config.keylists["target"])
             if len(response_keys)>0:
+                reaction_time = subject_clock.getTime()
+                response_onset = mri_clock.getTime()
                 response = response_keys[0]
                 if response == "escape":
                     trials.finished = True
-                reaction_time = subject_clock.getTime()
-                response_onset = mri_clock.getTime()
                 break
             config.window.flip()
                             
