@@ -5,13 +5,37 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-def set_output_directories(figures_dir: Path, subject: None, group: bool = True) -> Path:
+
+def set_output_directories(experiment_name: str) -> Path:
+    """Creates either a subject-specific or a group-specific subdirectory to save figures into. 
+    
+    Parameters:
+    experiment_name -- the name of the experiment being analysed (type: str)
+    
+    Returns:
+    statistics_dir -- an experiment-specific directory to save statistical outputs (type: Path object)
+    figures_subdir -- an experiment-specific directory to save figure outputs (type: Path object)
+    """
+
+    working_dir = Path.cwd()
+    results_dir = Path(working_dir / "results")
+    experiment_dir = Path(results_dir / f"{experiment_name}") 
+    figures_dir = Path(experiment_dir/ "figures") 
+    statistics_dir = Path(experiment_dir / "statistics")
+    for folder in [results_dir, experiment_dir, figures_dir, statistics_dir]: 
+        try:
+            folder.mkdir()                           
+        except FileExistsError:
+            pass
+    return statistics_dir, figures_dir
+
+def set_figures_subdir(figures_dir: Path, subject: str | None, group: bool = True):
     """Creates either a subject-specific or a group-specific subdirectory to save figures into. 
     
     Parameters:
     figures_dir -- the parent directory (type: Path object)
-    subject -- whether you want a subject-specific directory (type: None or bool)
-    group -- whether you want a group-specific directory (type: bool)
+    subject -- the subject of interest (if any) (type: str or None)
+    group -- whether to create a directory for group figures (type: bool)
     
     Returns:
     figures_subdir -- either a subject- or group-specific subdirectory (type: Path object)
@@ -25,11 +49,10 @@ def set_output_directories(figures_dir: Path, subject: None, group: bool = True)
         raise ValueError("If group is True, subject must be None (or False)")
     elif not subject and not group:
         raise ValueError("If group is False, subject must be a string of type 'sub-xx'")
-    for folder in [figures_dir, figures_subdir]: 
-        try:
-            folder.mkdir()                           
-        except FileExistsError:
-            pass
+    try:
+        figures_subdir.mkdir()                           
+    except FileExistsError:
+        pass
     return figures_subdir
 
 def read_mant_data(data_dir: str, trials_per_subject: int, data_type: str, sort_key) -> tuple[pd.DataFrame, int]:
@@ -345,7 +368,7 @@ def get_only_cues_and_targets(mant_data: pd.DataFrame) -> pd.DataFrame:
                     (i.e., one condition before and the other condition after)
     """
 
-    information_of_interest = mant_data.filter(items=["rt","cue_type","target_congruent"])
+    information_of_interest = mant_data.filter(items=["cue_type","rt", "target_congruent"])
     condition1 = information_of_interest.loc[(information_of_interest["target_congruent"] == "yes"),:]
     condition2 = information_of_interest.loc[(information_of_interest["target_congruent"] == "no"),:]
     conditions = [condition1,condition2]    
@@ -357,6 +380,7 @@ def get_only_cues_and_targets(mant_data: pd.DataFrame) -> pd.DataFrame:
 
 def plot_target_cue_interactions(mant_data: pd.DataFrame, 
                                  data_id: str,
+                                 specific_jitter: float | None,
                                  on_x_axis: str,
                                  sample_size: int,
                                  figures_savedir: Path):
@@ -365,6 +389,7 @@ def plot_target_cue_interactions(mant_data: pd.DataFrame,
     Parameters:
     mant_data -- a dataframe containing mANT data (type: pd.DataFrame)
     data_id -- an arbitrary label for the data (e.g., "sub-01" or "group") (type: str)
+    specific_jitter -- a specific jitter value used to select trials (type: float or None)
     on_x_axis -- what to put on the x axis (either 'targets' or 'cues') (type: str)
     sample_size -- the sample size (type: int)
     figures_savedir -- where to save the output (type: Path object)
@@ -373,6 +398,8 @@ def plot_target_cue_interactions(mant_data: pd.DataFrame,
     plt.rcParams["font.family"] = "monospace"
     _, ax = plt.subplots(figsize=(12,8))
     if on_x_axis == "targets":
+        mant_data = mant_data.sort_values(by="target_congruent",
+                                          ascending=False)
         sns.lineplot(x=mant_data["target_congruent"],
                      y=mant_data["rt"],
                      hue=mant_data["cue_type"],
@@ -385,6 +412,7 @@ def plot_target_cue_interactions(mant_data: pd.DataFrame,
                            fontweight="bold",
                            rotation=30);
     elif on_x_axis == "cues":
+        mant_data = mant_data.sort_values(by="cue_type")
         sns.lineplot(x=mant_data["cue_type"],
                      y=mant_data["rt"],
                      hue=mant_data["target_congruent"],
@@ -393,15 +421,21 @@ def plot_target_cue_interactions(mant_data: pd.DataFrame,
                      legend=True,
                      style=mant_data["target_congruent"],
                      markers=True)
-        ax.set_xticklabels(labels=["Invalid cue", "Valid cue", "Double cue"],
+        ax.set_xticklabels(labels=["Double cue", "Invalid cue", "Valid cue"],
                            fontweight="bold",
                            rotation=30);
     else:
         raise ValueError(" 'on_x_axis' can only be 'targets' or 'cues' ")
     
-    if data_id == "group":
+    if data_id == "group" and specific_jitter:
+        ax.set_title(label=f"Reaction time across {on_x_axis} ({data_id}, N={int(sample_size)}), jitter={specific_jitter}",
+                     fontweight="bold");  
+    elif data_id == "group":   
         ax.set_title(label=f"Reaction time across {on_x_axis} ({data_id}, N={int(sample_size)})",
-                    fontweight="bold");            
+                     fontweight="bold");        
+    elif data_id != "group" and specific_jitter:
+        ax.set_title(label=f"Reaction time across {on_x_axis} ({data_id}), jitter={specific_jitter}",
+                     fontweight="bold");
     else:
         ax.set_title(label=f"Reaction time across {on_x_axis} ({data_id})",
                      fontweight="bold");
@@ -411,9 +445,13 @@ def plot_target_cue_interactions(mant_data: pd.DataFrame,
     yticks = np.round(np.arange(start=0.4,stop=0.8,step=0.05),2)
     ax.set_yticks(yticks);
     ax.set_yticklabels([tick for tick in yticks]);
-    plt.savefig(figures_savedir / f"rt-across-{on_x_axis}-{data_id}.pdf",
+    if specific_jitter:
+        filename = figures_savedir / f"rt-across-{on_x_axis}-{data_id}-jitter-{specific_jitter}.pdf"
+    else:
+        filename = figures_savedir / f"rt-across-{on_x_axis}-{data_id}.pdf"
+    plt.savefig(filename,
                 bbox_inches="tight") 
-
+    
 def separate_preceding_from_following(mant_data: pd.DataFrame) -> tuple[list]:
     """Separates preceding trials from following trials. 
     Useful to check for systematic relationships between preceding and following trial types.
