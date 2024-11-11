@@ -55,12 +55,12 @@ def set_figures_subdir(figures_dir: Path, subject: str | None, group: bool = Tru
         pass
     return figures_subdir
 
-def read_mant_data(data_dir: str, trials_per_subject: int, data_type: str, sort_key) -> tuple[pd.DataFrame, int]:
+def read_mant_data(data_dir: str, sample_size: int, trials_per_subject: int, data_type: str, sort_key) -> pd.DataFrame:
     """Reads mANT data into a pandas dataframe.
     
     Parameters:
     data_dir -- the path to the folder that stores mANT data (type: str)
-    trials_per_subject -- the number of trials for each subject (type: int) 
+    sample_size -- the number of subjects that took part in the experiment (type: int)
     data_type -- the type of data to read (e.g., "beh" vs. "onsets") (type: str)
     sort_key -- the criterion to sort files before reading them (e.g., by run vs. by trial) (lambda function)
     
@@ -79,15 +79,19 @@ def read_mant_data(data_dir: str, trials_per_subject: int, data_type: str, sort_
                                       sep="\t")
         all_single_trials.append(trial_dataframe)
     all_trials = pd.concat(objs=all_single_trials,
-                           axis=0).reset_index()
+                           axis=0)
     del all_single_trials
 
+    subject_ids = np.array([[n]*trials_per_subject for n in range(1,sample_size+1)]).flatten()
+    all_trials.insert(loc=0,
+                      column="subject",
+                      value=subject_ids)
     all_trials.replace(to_replace="none",
                        value=np.nan,
                        inplace=True)
-    all_trials = all_trials.interpolate()
-    sample_size = len(all_trials) / trials_per_subject
-    return all_trials, sample_size 
+    all_trials = all_trials.dropna(axis=0,
+                                   how="any")
+    return all_trials
 
 def fetch_mant_conditions(all_trials: pd.DataFrame) -> list[pd.DataFrame]:
     """Extracts condition-specific data from a dataframe that contains data from the whole experiment.

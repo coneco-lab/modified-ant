@@ -1,7 +1,9 @@
 from pathlib import Path
 
-import statsmodels.api as sm
-from statsmodels.formula.api import ols
+import pandas as pd
+import scipy.stats as stats
+from statsmodels.stats.anova import AnovaRM
+from statsmodels.stats import multicomp as mc
 
 import analysis_utils as utils
 import analysis_config as config
@@ -18,10 +20,11 @@ for subject_number in range(1,config.SAMPLE_SIZE+1):
                                               subject=subject_id,
                                               group=False)
 
-    mant_data, _ = utils.read_mant_data(data_dir=config.data_dir + f"/{subject_id}",
-                                        trials_per_subject=config.TRIALS_PER_SUBJECT,
-                                        data_type="beh",
-                                        sort_key=config.sort_key)
+    mant_data = utils.read_mant_data(data_dir=config.data_dir + f"/{subject_id}",
+                                     sample_size=1,
+                                     trials_per_subject=config.TRIALS_PER_SUBJECT,
+                                     data_type="beh",
+                                     sort_key=config.subject_sort_key)
 
     separate_conditions_data = utils.fetch_mant_conditions(all_trials=mant_data)
     descriptives_dataframes = utils.get_condition_descriptives(conditions=separate_conditions_data,
@@ -69,17 +72,18 @@ figures_subdir = utils.set_figures_subdir(figures_dir=figures_dir,
                                           subject=None,
                                           group=True)
 
-mant_data, sample_size = utils.read_mant_data(data_dir=config.data_dir,
-                                              data_type="beh",
-                                              trials_per_subject=config.TRIALS_PER_SUBJECT,
-                                              sort_key=config.sort_key)
+mant_data = utils.read_mant_data(data_dir=config.data_dir,
+                                 sample_size=config.SAMPLE_SIZE,
+                                 data_type="beh",
+                                 trials_per_subject=config.TRIALS_PER_SUBJECT,
+                                 sort_key=config.group_sort_key)
 
 separate_conditions_data = utils.fetch_mant_conditions(all_trials=mant_data)
 descriptives_dataframes = utils.get_condition_descriptives(conditions=separate_conditions_data,
                                                            condition_names=config.abbreviated_condition_names)
 
 for plot_title, plot_type in zip(config.plot_titles, config.plot_types):
-    utils.plot_reaction_times(title=plot_title + f"(N={int(sample_size)})",
+    utils.plot_reaction_times(title=plot_title + f"(N={config.SAMPLE_SIZE})",
                               conditions=separate_conditions_data,
                               condition_names=config.condition_names,
                               figures_savedir=figures_subdir,
@@ -88,7 +92,7 @@ for plot_title, plot_type in zip(config.plot_titles, config.plot_types):
 utils.plot_rt_over_conditions(conditions=separate_conditions_data,
                               condition_names=config.abbreviated_condition_names,
                               data_id="group",
-                              sample_size=sample_size,
+                              sample_size=config.SAMPLE_SIZE,
                               figures_savedir=figures_subdir)
 
 relevant_data = utils.get_only_cues_and_targets(mant_data=mant_data)
@@ -97,12 +101,23 @@ for variable in ["cues","targets"]:
                                        data_id="group",
                                        specific_jitter=None,
                                        on_x_axis=variable,
-                                       sample_size=sample_size,
+                                       sample_size=config.SAMPLE_SIZE,
                                        figures_savedir=figures_subdir)
 
-data_ready_for_anova = utils.reorder_data_for_anova(all_trials=mant_data)
-ols_model = ols(formula="rt ~ C(cue_type) + C(target_congruent) + C(cue_type):C(target_congruent)", 
-                data=data_ready_for_anova).fit()
-anova_output_table = sm.stats.anova_lm(ols_model, typ=2)
-anova_output_table.to_csv(path_or_buf=statistics_dir / "parametric-rm-anova-table.csv",
-                          sep=",")
+
+anova_table = AnovaRM(data=mant_data,
+                      depvar="rt", 
+                      subject="subject",
+                      within=["cue_type","target_congruent"],
+                      aggregate_func="mean").fit()
+print(anova_table)
+anova_table.to_csv(path_or_buf=statistics_dir / "parametric-rm-anova-table.csv",
+                   sep=",")
+cue_post_hoc_tests = mc.MultiComparison(data=mant_data["rt"],
+                                        groups=mant_data["cue_type"])
+summary_table, _, _ = cue_post_hoc_tests.allpairtest(stats.ttest_ind, 
+                                                     method= "bonf")
+writeable_summary_table = pd.DataFrame(summary_table)
+writeable_summary_table.to_csv(path_or_buf=statistics_dir / "./post-hoc-cues-ttest-bonferroni.csv",
+                               sep=",")
+print(summary_table)
