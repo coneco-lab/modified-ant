@@ -2,18 +2,22 @@ experiment = "beh"
 
 if experiment == "beh":
     data_dir = "/home/matteo/Documents/phd/year2/abcc/ant/attention-network-test/outputs/behavioural-pilot/"
+    sort_key = lambda path : int(path.stem.rsplit("_")[3])                                  # sort by trial
     blockwise_boxplots_nrows = 3
     blockwise_boxplots_ncols = 3
 elif experiment == "eeg":
     data_dir = "/home/matteo/Documents/phd/year2/abcc/ant/attention-network-test/outputs/eeg-pilot/"
+    sort_key = lambda path : int(path.stem.rsplit("_")[3])                                  # sort by trial
     blockwise_boxplots_nrows = 3
     blockwise_boxplots_ncols = 3
 elif experiment == "mri":
     data_dir = "/home/matteo/Documents/phd/year2/abcc/ant/attention-network-test/outputs/mri-pilot/"
+    sort_key = lambda path : path.stem.rsplit("_")[2]                                       # sort by run
     blockwise_boxplots_nrows = 2
     blockwise_boxplots_ncols = 5
 elif experiment == "eeg-tms":
     data_dir = "/home/matteo/Documents/phd/year2/abcc/ant/attention-network-test/outputs/eeg-tms-pilot/"
+    sort_key = lambda path : int(path.stem.rsplit("_")[3])                                  # sort by trial
     blockwise_boxplots_nrows = 3
     blockwise_boxplots_ncols = 3
 
