@@ -1,19 +1,19 @@
-experiment = "mri"
+experiment = "beh"
 
 if experiment == "beh":
-    data_dir = "/home/matteo/Documents/phd/year2/ant/attention-network-test/outputs/behavioural-pilot/"
+    data_dir = "/home/matteo/Documents/phd/year2/abcc/ant/attention-network-test/outputs/behavioural-pilot/"
     blockwise_boxplots_nrows = 3
     blockwise_boxplots_ncols = 3
 elif experiment == "eeg":
-    data_dir = "/home/matteo/Documents/phd/year2/ant/attention-network-test/outputs/eeg-pilot/"
+    data_dir = "/home/matteo/Documents/phd/year2/abcc/ant/attention-network-test/outputs/eeg-pilot/"
     blockwise_boxplots_nrows = 3
     blockwise_boxplots_ncols = 3
 elif experiment == "mri":
-    data_dir = "/home/matteo/Documents/phd/year2/ant/attention-network-test/outputs/mri-pilot/"
+    data_dir = "/home/matteo/Documents/phd/year2/abcc/ant/attention-network-test/outputs/mri-pilot/"
     blockwise_boxplots_nrows = 2
     blockwise_boxplots_ncols = 5
 elif experiment == "eeg-tms":
-    data_dir = "/home/matteo/Documents/phd/year2/ant/attention-network-test/outputs/eeg-tms-pilot/"
+    data_dir = "/home/matteo/Documents/phd/year2/abcc/ant/attention-network-test/outputs/eeg-tms-pilot/"
     blockwise_boxplots_nrows = 3
     blockwise_boxplots_ncols = 3
 
