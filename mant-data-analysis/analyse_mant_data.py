@@ -21,7 +21,7 @@ for subject_number in range(1,config.SAMPLE_SIZE+1):
     mant_data, _ = utils.read_mant_data(data_dir=config.data_dir + f"/{subject_id}",
                                         trials_per_subject=config.TRIALS_PER_SUBJECT,
                                         data_type="beh",
-                                        sort_key=lambda path : path.stem.rsplit("_")[2])
+                                        sort_key=config.sort_key)
 
     separate_conditions_data = utils.fetch_mant_conditions(all_trials=mant_data)
     descriptives_dataframes = utils.get_condition_descriptives(conditions=separate_conditions_data,
@@ -72,7 +72,7 @@ figures_subdir = utils.set_figures_subdir(figures_dir=figures_dir,
 mant_data, sample_size = utils.read_mant_data(data_dir=config.data_dir,
                                               data_type="beh",
                                               trials_per_subject=config.TRIALS_PER_SUBJECT,
-                                              sort_key=lambda path : path.stem.rsplit("_")[2])
+                                              sort_key=config.sort_key)
 
 separate_conditions_data = utils.fetch_mant_conditions(all_trials=mant_data)
 descriptives_dataframes = utils.get_condition_descriptives(conditions=separate_conditions_data,
@@ -89,18 +89,6 @@ utils.plot_rt_over_conditions(conditions=separate_conditions_data,
                               condition_names=config.abbreviated_condition_names,
                               data_id="group",
                               sample_size=sample_size,
-                              figures_savedir=figures_subdir)
-
-blockwise_ordered_rts = utils.order_conditions_blockwise(mant_data=mant_data,
-                                                         condition_names=config.abbreviated_condition_names,
-                                                         number_of_blocks=5 if config.experiment == "mri" and subject_id == "sub-01" else config.NUMBER_OF_BLOCKS,
-                                                         trials_per_block=48 if config.experiment == "mri" and subject_id == "sub-01" else config.TRIALS_PER_BLOCK)
-
-utils.plot_blockwise_boxplots(nrows=1 if config.experiment == "mri" and subject_id == "sub-01" else config.blockwise_boxplots_nrows,
-                              ncols=config.blockwise_boxplots_ncols,
-                              data_id="group",
-                              sample_size=sample_size,
-                              blockwise_ordered_rts=blockwise_ordered_rts,
                               figures_savedir=figures_subdir)
 
 relevant_data = utils.get_only_cues_and_targets(mant_data=mant_data)
