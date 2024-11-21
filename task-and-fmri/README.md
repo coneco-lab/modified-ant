@@ -1,7 +1,7 @@
 ## mANT - Task and fMRI ##
 
 This mANT implementation consists of three code files, plus supporting materials:
-- `utils.py`: a custom Python module that contains functions to draw experimental stimuli, display them with the appropriate timing, receive triggers from an MRI scanner, collect a subject's responses and save them to disk  
+- `utils.py`: a custom Python module that contains functions to draw experimental stimuli, display them with the appropriate timing, receive triggers from an MRI scanner in the form of emulated keypresses, collect a subject's responses and save them to disk  
 - `master_script.py`: calls `utils.py`'s functions in the right order
 - `config.py`: critical variables and class instances, used by `master_script.py` and `utils.py`
 - `mant-conditions.csv`: a `.csv` file containing task condition parameters (one row per condition). Required by PsychoPy 
@@ -27,4 +27,4 @@ For questions or improvement suggestions, you can:
 
 Matteo De Matola ([UniTN](https://webapps.unitn.it/du/en/Persona/PER0247884/Pubblicazioni) | [GitHub](https://github.com/matteo-d-m))
 
-Last updated May 2024
+Last updated November 2024
