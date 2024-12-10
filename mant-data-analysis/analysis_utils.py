@@ -1,10 +1,24 @@
 from pathlib import Path
+from tkinter import simpledialog
 
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+
+def ask_sample_size():
+    """Open a pop-up dialog to input sample size.
+    
+    Returns
+    sample_size -- the sample size inserted by the user (type: int)
+    """
+    
+    dialog_title = "Please insert sample size"
+    dialog_prompt = "How many subjects are we analysing?"
+    sample_size = simpledialog.askinteger(title=dialog_title,
+                                          prompt=dialog_prompt)
+    return sample_size
 
 def set_output_directories(experiment_name: str) -> Path:
     """Creates either a subject-specific or a group-specific subdirectory to save figures into. 

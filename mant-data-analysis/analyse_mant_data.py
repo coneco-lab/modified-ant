@@ -11,7 +11,8 @@ import analysis_config as config
 
 statistics_dir, figures_dir = utils.set_output_directories(experiment_name=config.experiment + "-pilot-2")
 
-for subject_number in range(1,config.SAMPLE_SIZE+1):
+sample_size = utils.ask_sample_size()
+for subject_number in range(1,sample_size+1):
     if subject_number < 10:
         subject_id = f"sub-0{subject_number}"
     else:
@@ -73,7 +74,7 @@ figures_subdir = utils.set_figures_subdir(figures_dir=figures_dir,
                                           group=True)
 
 mant_data = utils.read_mant_data(data_dir=config.data_dir,
-                                 sample_size=config.SAMPLE_SIZE,
+                                 sample_size=sample_size,
                                  data_type="beh",
                                  trials_per_subject=config.TRIALS_PER_SUBJECT,
                                  sort_key=config.group_sort_key)
@@ -83,7 +84,7 @@ descriptives_dataframes = utils.get_condition_descriptives(conditions=separate_c
                                                            condition_names=config.abbreviated_condition_names)
 
 for plot_title, plot_type in zip(config.plot_titles, config.plot_types):
-    utils.plot_reaction_times(title=plot_title + f"(N={config.SAMPLE_SIZE})",
+    utils.plot_reaction_times(title=plot_title + f"(N={sample_size})",
                               conditions=separate_conditions_data,
                               condition_names=config.condition_names,
                               figures_savedir=figures_subdir,
@@ -92,7 +93,7 @@ for plot_title, plot_type in zip(config.plot_titles, config.plot_types):
 utils.plot_rt_over_conditions(conditions=separate_conditions_data,
                               condition_names=config.abbreviated_condition_names,
                               data_id="group",
-                              sample_size=config.SAMPLE_SIZE,
+                              sample_size=sample_size,
                               figures_savedir=figures_subdir)
 
 relevant_data = utils.get_only_cues_and_targets(mant_data=mant_data)
@@ -101,7 +102,7 @@ for variable in ["cues","targets"]:
                                        data_id="group",
                                        specific_jitter=None,
                                        on_x_axis=variable,
-                                       sample_size=config.SAMPLE_SIZE,
+                                       sample_size=sample_size,
                                        figures_savedir=figures_subdir)
 
 

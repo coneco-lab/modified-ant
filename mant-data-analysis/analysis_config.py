@@ -1,6 +1,5 @@
 experiment = "beh"
 
-SAMPLE_SIZE = 8
 NUMBER_OF_BLOCKS = 10 if experiment == "mri" else 9
 TRIALS_PER_BLOCK = 24 if experiment == "mri" else 48
 TRIALS_PER_SUBJECT = NUMBER_OF_BLOCKS*TRIALS_PER_BLOCK
