@@ -9,7 +9,7 @@ import analysis_utils as utils
 import analysis_config as config
 
 
-statistics_dir, figures_dir = utils.set_output_directories(experiment_name=config.experiment + "-pilot")
+statistics_dir, figures_dir = utils.set_output_directories(experiment_name=config.experiment + "-pilot-2")
 
 for subject_number in range(1,config.SAMPLE_SIZE+1):
     if subject_number < 10:

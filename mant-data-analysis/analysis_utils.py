@@ -105,11 +105,9 @@ def fetch_mant_conditions(all_trials: pd.DataFrame) -> list[pd.DataFrame]:
 
     condition1 = all_trials.loc[(all_trials["cue_type"] == "spatial valid") & (all_trials["target_congruent"] == "yes"),:]
     condition2 = all_trials.loc[(all_trials["cue_type"] == "spatial valid") & (all_trials["target_congruent"] == "no"),:]
-    condition3 = all_trials.loc[(all_trials["cue_type"] == "spatial invalid") & (all_trials["target_congruent"] == "yes"),:]
-    condition4 = all_trials.loc[(all_trials["cue_type"] == "spatial invalid") & (all_trials["target_congruent"] == "no"),:]
-    condition5 = all_trials.loc[(all_trials["cue_type"] == "double") & (all_trials["target_congruent"] == "yes"),:]
-    condition6 = all_trials.loc[(all_trials["cue_type"] == "double") & (all_trials["target_congruent"] == "no"),:]
-    conditions = [condition1,condition2,condition3,condition4,condition5,condition6]
+    condition3 = all_trials.loc[(all_trials["cue_type"] == "double") & (all_trials["target_congruent"] == "yes"),:]
+    condition4 = all_trials.loc[(all_trials["cue_type"] == "double") & (all_trials["target_congruent"] == "no"),:]
+    conditions = [condition1,condition2,condition3,condition4]
     for condition in conditions:
         condition.reset_index(drop=True,
                               inplace=True)
@@ -155,7 +153,7 @@ def plot_reaction_times(title: str,
     """
 
     plt.rcParams["font.family"] = "monospace"
-    fig, axs = plt.subplots(nrows=3,
+    fig, axs = plt.subplots(nrows=2,
                             ncols=2,
                             sharex=True,
                             sharey=True,
@@ -425,7 +423,7 @@ def plot_target_cue_interactions(mant_data: pd.DataFrame,
                      legend=True,
                      style=mant_data["target_congruent"],
                      markers=True)
-        ax.set_xticklabels(labels=["Double cue", "Invalid cue", "Valid cue"],
+        ax.set_xticklabels(labels=["Double cue", "Valid cue"],
                            fontweight="bold",
                            rotation=30);
     else:
@@ -520,10 +518,6 @@ def recode_trials(trials: list[pd.DataFrame]):
             trials[trial_number] = "VC"
         elif trial["cue_type"] == "spatial valid" and trial["target_congruent"] == "no":
             trials[trial_number] = "VI"
-        elif trial["cue_type"] == "spatial invalid" and trial["target_congruent"] == "yes":
-            trials[trial_number] = "IC"
-        elif trial["cue_type"] == "spatial invalid" and trial["target_congruent"] == "no":
-            trials[trial_number] = "II"
         elif trial["cue_type"] == "double" and trial["target_congruent"] == "yes":
             trials[trial_number] = "DC"
         elif trial["cue_type"] == "double" and trial["target_congruent"] == "no":
@@ -595,7 +589,7 @@ def plot_preceding_conditions_counts(condition_names: list[str],
     """
     
     plt.rcParams["font.family"] = "monospace"
-    fig, axs = plt.subplots(nrows=3,
+    fig, axs = plt.subplots(nrows=2,
                             ncols=2,
                             sharex=True,
                             sharey=True,
@@ -632,9 +626,8 @@ def reorder_data_for_anova(all_trials: pd.DataFrame) -> pd.DataFrame:
 
     information_of_interest = all_trials.filter(items=["rt","cue_type","target_congruent"])
     condition1 = information_of_interest.loc[(information_of_interest["cue_type"] == "spatial valid"),:]
-    condition2 = information_of_interest.loc[(information_of_interest["cue_type"] == "spatial invalid"),:]
-    condition3 = information_of_interest.loc[(information_of_interest["cue_type"] == "double"),:]
-    conditions = [condition1,condition2,condition3]    
+    condition2 = information_of_interest.loc[(information_of_interest["cue_type"] == "double"),:]
+    conditions = [condition1,condition2]    
     ordered_data = pd.concat(objs=conditions,
                              axis=0)
     ordered_data.reset_index(drop=True,
