@@ -1,5 +1,4 @@
 import psychopy
-#psychopy.useVersion("2022.2.5")
 from psychopy import core, data, gui
 
 experiment_info = {"name": "mANT",
@@ -21,7 +20,7 @@ if experiment_info["subject"] != "": # start experiment only if subject ID has b
      
     text_folder, beh_data_folder = utils.make_directories(experiment_info=experiment_info)  
     
-    conditions = data.importConditions(config.conditions_file)
+    training_conditions = data.importConditions(config.training_conditions_file)
     response_clock = core.Clock() 
 
     utils.display_text(file_to_read=text_folder / "welcome-message.txt", 
@@ -34,7 +33,7 @@ if experiment_info["subject"] != "": # start experiment only if subject ID has b
     demos_frames = [config.frames_per_item["fixation_demo"], 
                     config.frames_per_item["cue_demo"], 
                     config.frames_per_item["arrows_demo"]]
-    utils.display_demos(trials_pool=conditions,
+    utils.display_demos(trials_pool=training_conditions ,
                         window=config.window,
                         demos=demos_to_display,
                         demos_frames = demos_frames)
@@ -44,7 +43,7 @@ if experiment_info["subject"] != "": # start experiment only if subject ID has b
                            window=config.window,
                            display_duration=config.frames_per_item["instructions"])
     
-    training_trials = data.TrialHandler(trialList=conditions, 
+    training_trials = data.TrialHandler(trialList=training_conditions , 
                                         nReps=1)
     utils.run_trials_save_data(trials=training_trials,
                                elapsed_trials=0,
@@ -56,6 +55,7 @@ if experiment_info["subject"] != "": # start experiment only if subject ID has b
                            window=config.window,
                            display_duration=config.frames_per_item["instructions"])
     
+    conditions = data.importConditions(config.conditions_file)
     for block_number in range(config.NUMBER_OF_BLOCKS):
         experimental_trials = data.TrialHandler(trialList=conditions, 
                                                 nReps=int(config.TRIALS_PER_BLOCK / len(conditions)))
