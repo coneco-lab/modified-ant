@@ -17,7 +17,8 @@ for subject_number in range(1,sample_size+1):
         subject_id = f"sub-0{subject_number}"
     else:
         subject_id = f"sub-{subject_number}"
-    if not Path(config.data_dir + f"/{subject_id}").is_file():
+    if not Path(config.data_dir + f"{subject_id}").is_dir():
+        print(f"Data for subject {subject_id} not found - skipping to next subject")
         continue
     figures_subdir = utils.set_figures_subdir(figures_dir=figures_dir,
                                               subject=subject_id,

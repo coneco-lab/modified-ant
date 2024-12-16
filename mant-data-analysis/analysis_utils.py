@@ -227,6 +227,7 @@ def plot_reaction_times(title: str,
 
     plt.savefig(figures_savedir / plot_filename,
                 bbox_inches="tight")
+    plt.close()
 
 def plot_rt_over_conditions(conditions: list[pd.DataFrame], 
                             condition_names: list[str],
@@ -283,7 +284,8 @@ def plot_rt_over_conditions(conditions: list[pd.DataFrame],
     ax.legend()
     
     plt.savefig(figures_savedir / f"rt-conditions-means.pdf",
-                bbox_inches="tight")    
+                bbox_inches="tight")  
+    plt.close()  
 
 def order_conditions_blockwise(mant_data: pd.DataFrame,
                                condition_names: list[str],
@@ -371,7 +373,8 @@ def plot_blockwise_boxplots(nrows: int,
                          ylabel="")
 
     plt.savefig(figures_savedir / f"rt-boxplots-conditions-in-block.pdf",
-                bbox_inches="tight")    
+                bbox_inches="tight")  
+    plt.close()  
     
 def get_only_cues_and_targets(mant_data: pd.DataFrame) -> pd.DataFrame:
     """Extracts reaction times, cue, and target information from mANT data.
@@ -424,6 +427,7 @@ def plot_target_cue_interactions(mant_data: pd.DataFrame,
                      legend=True,
                      style=mant_data["cue_type"],
                      markers=True)
+        ax.set_xticks(ax.get_xticks())
         ax.set_xticklabels(labels=["Congruent target", "Incongruent target"],
                            fontweight="bold",
                            rotation=30);
@@ -437,6 +441,7 @@ def plot_target_cue_interactions(mant_data: pd.DataFrame,
                      legend=True,
                      style=mant_data["target_congruent"],
                      markers=True)
+        ax.set_xticks(ax.get_xticks())
         ax.set_xticklabels(labels=["Double cue", "Valid cue"],
                            fontweight="bold",
                            rotation=30);
@@ -467,6 +472,7 @@ def plot_target_cue_interactions(mant_data: pd.DataFrame,
         filename = figures_savedir / f"rt-across-{on_x_axis}-{data_id}.pdf"
     plt.savefig(filename,
                 bbox_inches="tight") 
+    plt.close()
     
 def separate_preceding_from_following(mant_data: pd.DataFrame) -> tuple[list]:
     """Separates preceding trials from following trials. 
@@ -627,6 +633,7 @@ def plot_preceding_conditions_counts(condition_names: list[str],
         current_axis.set(title=f"Condition {condition_names[i]} is preceded by:")
     plt.savefig(figures_savedir,
                 bbox_inches="tight")
+    plt.close()
 
 def reorder_data_for_anova(all_trials: pd.DataFrame) -> pd.DataFrame:
     """Extracts condition-specific data from a dataframe that contains data from the whole experiment.
