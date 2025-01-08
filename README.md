@@ -42,7 +42,7 @@ While the code contained in `mant-data-analysis` relies on:
 # **Installation notes:**
 
 - A good guide to Python installations (not specific to the mANT nor PsychoPy) is available at [this HTTPS URL](https://github.com/vigji/python-cimec/blob/main/python-installation.md)
-- We had problems installing PsychoPy via `conda`, despite different machines with different operating systems and different levels of user expertise. We found it easier to install via [`pip`](https://pip.pypa.io/en/stable/)
+- We had problems installing PsychoPy via `conda`, despite different machines with different operating systems and different levels of user expertise. We found it easier to install via [`pip`](https://pip.pypa.io/en/stable/) (`pip install psychopy`)
 - If you will only use Python to run the mANT, the standalone PsychoPy version (SPV) is your best installation option (simply because it's the easiest). Visit [PsychoPy](https://psychopy.org/)'s website for details. However, if you use (or are planning on using) Python beyond the mANT, we strongly discourage using the SPV because:
     - It comes with its own Python installation, even if you already have one on your machine. This can get messy
     - Its main advantage over other PsychoPy versions is a GUI, whose use we discourage (code is more flexible, transparent, and reproducible)
@@ -66,4 +66,4 @@ For questions or improvement suggestions, you can:
 
 Matteo De Matola ([UniTN](https://webapps.unitn.it/du/en/Persona/PER0247884/Pubblicazioni) | [GitHub](https://github.com/matteo-d-m))
 
-Last updated November 2024
+Last updated January 2025
