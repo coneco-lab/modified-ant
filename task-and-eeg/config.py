@@ -15,11 +15,11 @@ output_variables = ["cue_location",
                     "response",
                     "correct",
                     "rt"]
-monitor_info = {"name": "LA2205-monitor-eeglab", #"hp-monitor-eeglab",
-                 "size_pixels": [1600,900],      #[1920,1080],
-                 "width_cm": (47.5),             #(62),
+monitor_info = {"name": "monitor-eeglab", 
+                 "size_pixels": [2560,1440],      
+                 "width_cm": (59),             
                  "subject_distance_cm": 65,
-                 "refresh_rate_hz": 59}
+                 "refresh_rate_hz": 60}
 monitor = monitors.Monitor(name=monitor_info["name"])
 monitor.setSizePix(monitor_info["size_pixels"]) 
 monitor.setWidth(monitor_info["width_cm"]) 
