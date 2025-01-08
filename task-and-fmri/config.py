@@ -4,7 +4,7 @@ from psychopy import monitors, visual
 
 
 conditions_file = "mant-conditions.csv"
-training_conditions_file = "mant-training-conditions.csv"
+training_conditions_file = "mant-conditions-training.csv"
 
 NUMBER_OF_RUNS = 10
 TRIALS_PER_RUN = 24
