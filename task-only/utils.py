@@ -194,17 +194,8 @@ def run_trials_save_data(trials, elapsed_trials, response_clock, beh_data_folder
             config.window.flip()
                             
         for arrow in config.arrows:                                                     # relevant frames now ended, so stop drawing the flankers + target sequence 
-            arrow.setAutoDraw(False)
-
-        try:
-            last_fixation_time = config.MAX_TRIAL_DURATION - float(reaction_time) - config.display_times["initial_fixation"][trial_number]
-        except TypeError:
-            last_fixation_time = config.MAX_TRIAL_DURATION - config.display_times["initial_fixation"][trial_number]
-            
-        last_fixation_frames = int(last_fixation_time*config.monitor_info["refresh_rate_hz"])
-        for frame in range(last_fixation_frames):
-            config.window.flip()                                                        # relevant frames now ended, so stop drawing the fixation
-        config.fixation.setAutoDraw(False)
+            arrow.setAutoDraw(False)                                                       
+        config.fixation.setAutoDraw(False)                                              # relevant frames now ended, so stop drawing the fixation
         dependent_variables = dict(response=response,
                                    reaction_time=reaction_time)
         try:
