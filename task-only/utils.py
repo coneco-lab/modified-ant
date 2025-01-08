@@ -174,7 +174,7 @@ def run_trials_save_data(trials, elapsed_trials, response_clock, beh_data_folder
         for line in config.asterisk_components:                                         # relevant frames now ended, so stop drawing the asterisk cue
             line.setAutoDraw(False)
         
-        for frame in range(config.frames_per_item["later_fixation"]):                   # 400 ms of cross only
+        for frame in range(config.frames_per_item["later_fixation"][trial_number]):     # 300-11800 ms of cross only (nonuniform jitter, 300 is most likely)
             config.window.flip()
 
         for arrow in config.arrows:                                                     # draw the flankers + target sequence automatically
