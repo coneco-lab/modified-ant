@@ -4,9 +4,9 @@ from psychopy import monitors, visual
    
 conditions_file = "mant-conditions.csv"
 training_conditions_file = "mant-conditions-training.csv"
-NUMBER_OF_BLOCKS = 9
-TRIALS_PER_BLOCK = 48
-MAX_TRIAL_DURATION = 3.6
+
+NUMBER_OF_BLOCKS = 10
+TRIALS_PER_BLOCK = 24
 
 output_variables = ["cue_location",
                     "sequence_location",
@@ -41,15 +41,19 @@ window = visual.Window(size=monitor.getSizePix(),
                        useFBO=True,
                        units="deg")
 
+""" Lists of fixation values as per Fan et al. (2005) """
+possible_initial_fixations = [3000, 3250, 3500, 3750, 4000, 4500, 5000, 5500, 6500, 8000, 10000, 15000]
+possible_later_fixations = [300, 300, 300, 550, 800, 1050, 1550, 2300, 3300, 4800, 6550, 11800]
+
 display_times = {"instructions": 180,
                  "fixation_demo": 10,
                  "cue_demo": 10,
                  "arrows_demo": 10,        
-                 "initial_fixation": [0.001*random.randrange(500,1000,1) for trial in range(TRIALS_PER_BLOCK)], 
-                 "cue": 0.1,
-                 "later_fixation": 1.1,                                                                       
-                 "target": 1.1,
-                 "end_of_block_text": 60}                                      
+                 "initial_fixation": [0.001*random.sample(population=possible_initial_fixations, k=1)[0] for trial in range(TRIALS_PER_BLOCK)],
+                 "cue": 0.2,
+                 "later_fixation": [0.001*random.sample(population=possible_later_fixations, k=1)[0] for trial in range(TRIALS_PER_BLOCK)],                                                                     
+                 "target": 2,
+                 "end_of_block_text": 3600}                                         
 
 frames_per_item = {"instructions":int(display_times["instructions"]*monitor_info["refresh_rate_hz"]),
                    "fixation_demo": int(display_times["fixation_demo"]*monitor_info["refresh_rate_hz"]),
