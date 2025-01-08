@@ -5,6 +5,7 @@ This mANT implementation consists of three code files, plus supporting materials
 - `master_script.py`: calls `utils.py`'s functions in the right order
 - `config.py`: critical variables and class instances, used by `master_script.py` and `utils.py`
 - `mant-conditions.csv`: a `.csv` file containing task condition parameters (one row per condition). Required by PsychoPy 
+- `mant-conditions-training.csv`: a shorter version of `mant-conditions.csv`, to use for training
 - `text-messages`: a folder that contains text messages displayed during the experiment (e.g., instructions) in the form of `.txt` files
 
 Running `master_script.py` is enough to run the mANT. If you want to modify a critical variable (e.g., the number of experimental blocks) or class instance (e.g., monitor parameters), just change it in `config.py`. If you want to change what happens at any step along the task (e.g., the events inside a trial), act on `utils.py`.
@@ -15,7 +16,7 @@ Please, preserve the current directory structure to minimise the risk of code br
 
 ---
 
-The timeline of this experiment (i.e., the time intervals between experimental events) is optimised for EEG experiments. It can reproduce the behavioural results by Fan et al. (2002), but it will become suboptimal if used with other neuroimaging techniques (e.g., fMRI). 
+The timeline of this experiment (i.e., the time intervals between experimental events) is optimised for EEG experiments. It can reproduce the behavioural results by Fan et al. (2002), but it will become suboptimal if used with other neuroimaging techniques (e.g., fMRI). Moreover, the code blocks that send 8-bit triggers to the EEG system will break if used outside an EEG experiment.
 
 --- 
 
@@ -27,4 +28,4 @@ For questions or improvement suggestions, you can:
 
 Matteo De Matola ([UniTN](https://webapps.unitn.it/du/en/Persona/PER0247884/Pubblicazioni) | [GitHub](https://github.com/matteo-d-m))
 
-Last updated May 2024
+Last updated January 2025
