@@ -15,7 +15,9 @@ output_variables = ["cue_location",
                     "target_direction",
                     "response",
                     "correct",
-                    "rt"]
+                    "rt",
+                    "pre_cue_jitter",
+                    "post_cue_jitter"]
 monitor_info = {"name": "monitor-eeglab", 
                  "size_pixels": [2560,1440],      
                  "width_cm": (59),             

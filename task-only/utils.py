@@ -196,24 +196,27 @@ def run_trials_save_data(trials, elapsed_trials, response_clock, beh_data_folder
         for arrow in config.arrows:                                                     # relevant frames now ended, so stop drawing the flankers + target sequence 
             arrow.setAutoDraw(False)                                                       
         config.fixation.setAutoDraw(False)                                              # relevant frames now ended, so stop drawing the fixation
+        
         dependent_variables = dict(response=response,
-                                   reaction_time=reaction_time)
+                                   reaction_time=reaction_time,
+                                   pre_cue_jitter=config.display_times["initial_fixation"][trial_number],
+                                   post_cue_jitter=config.display_times["later_fixation"][trial_number])
         try:
-            score_and_save_trial(trial_number=trial_number+elapsed_trials,
-                                 trial_components=trial_components,
-                                 dependent_variables=dependent_variables,
-                                 beh_data_folder=beh_data_folder,
-                                 experiment_info=experiment_info)
+            behavioural_data_metadata = score_trial(trial_components=trial_components,
+                                                    dependent_variables=dependent_variables)
+            behavioural_data_metadata = {key:value for key,value in zip(config.output_variables, behavioural_data_metadata)}
+            save_trial(trial_number=trial_number,
+                       data_to_save=[behavioural_data_metadata],
+                       data_types=["beh"],
+                       destination_folders=[beh_data_folder],
+                       experiment_info=experiment_info)
         except AttributeError:
             pass
 
-def score_and_save_trial(trial_number, trial_components, dependent_variables, beh_data_folder, experiment_info):
+def score_trial(trial_components, dependent_variables):
     """Scores a subject's response (correct, incorrect, miss) and saves it. 
-       Kept in a separate function because in the future, these operations
-       might be useful outside the trials loop. 
 
     Parameters:
-    trial_number -- the index of the trial being run (e.g., 0 for the first) (type: int)
     trial_components -- the things that exist in the trial (i.e., stimuli) (type: OrderedDict)
     dependent_variables -- a container of the trial's dependent variable values (type: dict) 
     beh_data_folder -- the path to the destination folder for output data (type: str)
@@ -223,9 +226,9 @@ def score_and_save_trial(trial_number, trial_components, dependent_variables, be
     response = dependent_variables["response"]
     reaction_time = dependent_variables["reaction_time"]
 
-    if trial_components["target_direction"] == "left" and response == "left":
+    if trial_components["target_direction"] == "left" and response == "1":
         correct = 1
-    elif trial_components["target_direction"] == "right" and response == "right":
+    elif trial_components["target_direction"] == "right" and response == "6":
         correct = 1        
     elif response == None:
         response = "miss"
@@ -234,18 +237,35 @@ def score_and_save_trial(trial_number, trial_components, dependent_variables, be
     else:
         correct = 0
 
-    outputs = [trial_components["cue_location"],
-               trial_components["sequence_location"],
-               trial_components["cue_type"],
-               trial_components["target_congruent"],
-               trial_components["target_direction"],
-               response,
-               correct,
-               reaction_time]
+    behavioural_data_metadata = [trial_components["cue_location"],
+                                 trial_components["sequence_location"],
+                                 trial_components["cue_type"],
+                                 trial_components["target_congruent"],
+                                 trial_components["target_direction"],
+                                 response,
+                                 correct,
+                                 reaction_time,
+                                 dependent_variables["pre_cue_jitter"],
+                                 dependent_variables["post_cue_jitter"]]
+    return behavioural_data_metadata
     
-    output_data = pd.DataFrame(data={key:value for key,value in zip(config.output_variables, outputs)},
-                               index=[0])
-    output_filename = f"sub-{experiment_info['subject']}_task-{experiment_info['name']}_beh_{trial_number}.tsv"
-    output_data.to_csv(path_or_buf=beh_data_folder / output_filename,
-                       sep="\t",
-                       index=False)    
+def save_trial(trial_number, data_to_save, data_types, destination_folders, experiment_info):
+    """Saves all trial information to disk.
+
+    Parameters:
+    trial_number -- the index of the trial being run (e.g., 0 for the first) (type: int)
+    data_to_save -- a list of data to save (type: list[dict])
+    data_types -- a list of strings that identify the data to save (type: list[str])
+    destination_folders -- a list of destination folders for the data (type: list[Path])
+    experiment_info -- experiment metadata (type: dict)                         
+    """
+
+    for data, data_type, destination in zip(data_to_save, data_types, destination_folders):
+        if type(data) is not dict:
+            raise TypeError("Data should be organised as a dictionary of type 'variable: values'")
+        dataframe = pd.DataFrame(data=data, 
+                                 index=[0])
+        output_filename = f"sub-{experiment_info['subject']}_task-{experiment_info['name']}_{data_type}_{trial_number}.tsv"
+        dataframe.to_csv(path_or_buf=destination / output_filename,
+                         sep="\t",
+                         index=False)          
