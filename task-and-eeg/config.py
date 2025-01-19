@@ -2,6 +2,7 @@ import random
 
 from psychopy import monitors, visual
    
+   
 conditions_file = "mant-conditions.csv"
 NUMBER_OF_BLOCKS = 9
 TRIALS_PER_BLOCK = 72
@@ -61,11 +62,10 @@ frames_per_item = {"instructions":int(display_times["instructions"]*monitor_info
                    "end_of_block_text": int(display_times["end_of_block_text"]*monitor_info["refresh_rate_hz"])}
 
 trigger_codes = {"spatial_valid_cue": 2,
-                 "spatial_invalid_cue": 3,
-                 "double_cue": 4,
-                 "congruent_target": 5,
-                 "incongruent_target": 6,
-                 "response": 7}                
+                 "double_cue": 3,
+                 "congruent_target": 4,
+                 "incongruent_target": 5,
+                 "response": 6}                
 
 # fixation cross vertices in PsychoPy window space
 fixation_vertices = [[0.275,1.035-1.06],                                

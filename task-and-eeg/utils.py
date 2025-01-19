@@ -1,8 +1,6 @@
 import random
 from pathlib import Path
 
-import time
-
 import pandas as pd
 from psychopy import visual, event
 
@@ -155,22 +153,7 @@ def run_trials_save_data(trials, elapsed_trials, response_clock, beh_data_folder
     
     for trial_number, trial_components in enumerate(trials):
         response = None
-        reaction_time = None
-        
-        # just to ensure that all pins are closed
-        port.setPin(pinNumber=config.trigger_codes["spatial_valid_cue"],            
-                    state=0)
-        port.setPin(pinNumber=config.trigger_codes["spatial_invalid_cue"],           
-                    state=0)
-        port.setPin(pinNumber=config.trigger_codes["double_cue"],           
-                    state=0)
-        port.setPin(pinNumber=config.trigger_codes["congruent_target"],           
-                    state=0)
-        port.setPin(pinNumber=config.trigger_codes["incongruent_target"],            
-                    state=0)
-        port.setPin(pinNumber=config.trigger_codes["response"],            
-                    state=0)
-        
+        reaction_time = None        
         for line in config.asterisk_components:                                         # draw all lines (i.e, the cue's components)
             line.setStart(trial_components[line.name][0])                               # each line has a start 
             line.setEnd(trial_components[line.name][1])                                 # and an end
@@ -185,14 +168,9 @@ def run_trials_save_data(trials, elapsed_trials, response_clock, beh_data_folder
             line.setAutoDraw(True)
         
         if trial_components["cue_type"] == "spatial valid":
-            port.setPin(pinNumber=config.trigger_codes["spatial_valid_cue"],
-                        state=1)
-        elif trial_components["cue_type"] == "spatial invalid":
-            port.setPin(pinNumber=config.trigger_codes["spatial_invalid_cue"],
-                        state=1)
+            port.setData(int("00000010",2))
         elif trial_components["cue_type"] == "double":
-            port.setPin(pinNumber=config.trigger_codes["double_cue"],
-                        state=1)
+            port.setData(int("00000011",2))
         
         for frame in range(config.frames_per_item["cue"]):                              # on every frame that it must appear on
             config.window.flip()
@@ -208,33 +186,17 @@ def run_trials_save_data(trials, elapsed_trials, response_clock, beh_data_folder
             
         config.window.callOnFlip(response_clock.reset)
         event.clearEvents()
-        
-        time.sleep(0.03)                                                                # correcting for a 30 ms misalignment with the eeg recording 
+
         for frame in range(config.frames_per_item["target"]):                           # on every frame that it must appear on
             if frame == 0 and trial_components["target_congruent"] == "yes":
-                port.setPin(pinNumber=config.trigger_codes["congruent_target"],
-                            state=1)
+                port.setData(int("00000100",2))
             elif frame == 0 and trial_components["target_congruent"] == "no":
-                port.setPin(pinNumber=config.trigger_codes["incongruent_target"],
-                            state=1)                
+                port.setData(int("00000101",2))         
             keys = event.getKeys(keyList=["left","right","escape"])
             if len(keys)>0:
-                port.setPin(pinNumber=config.trigger_codes["response"],                 # response given, so open response pin
-                            state=1)
+                port.setData(int("00000110",2))
                 response = keys[0]
                 if response == "escape":
-                    port.setPin(pinNumber=config.trigger_codes["spatial_valid_cue"],    # escaping trial, so close all pins
-                                state=0)
-                    port.setPin(pinNumber=config.trigger_codes["spatial_invalid_cue"],
-                                state=0)
-                    port.setPin(pinNumber=config.trigger_codes["double_cue"],
-                                state=0)
-                    port.setPin(pinNumber=config.trigger_codes["congruent_target"],
-                                state=0)
-                    port.setPin(pinNumber=config.trigger_codes["incongruent_target"],
-                                state=0)
-                    port.setPin(pinNumber=config.trigger_codes["response"],
-                                state=0)
                     trials.finished = True
                 reaction_time = response_clock.getTime()
                 break
@@ -262,18 +224,6 @@ def run_trials_save_data(trials, elapsed_trials, response_clock, beh_data_folder
                                  experiment_info=experiment_info)
         except AttributeError:
             pass
-        port.setPin(pinNumber=config.trigger_codes["spatial_valid_cue"],               # finished trial, so close all pins
-                    state=0)
-        port.setPin(pinNumber=config.trigger_codes["spatial_invalid_cue"],
-                    state=0)
-        port.setPin(pinNumber=config.trigger_codes["double_cue"],
-                    state=0)
-        port.setPin(pinNumber=config.trigger_codes["congruent_target"],
-                    state=0)
-        port.setPin(pinNumber=config.trigger_codes["incongruent_target"],
-                    state=0)
-        port.setPin(pinNumber=config.trigger_codes["response"],
-                    state=0)
 
 def score_and_save_trial(trial_number, trial_components, dependent_variables, beh_data_folder, experiment_info):
     """Scores a subject's response (correct, incorrect, miss) and saves it. 

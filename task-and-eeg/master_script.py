@@ -27,7 +27,7 @@ if experiment_info["subject"] != "": # start experiment only if subject ID has b
     
     conditions = data.importConditions(config.conditions_file)
     response_clock = core.Clock()
-    port = parallel.ParallelPort(address="0x0378") 
+    port = parallel.ParallelPort(address="0x3FD8") 
 
     utils.display_text(file_to_read=text_folder / "welcome-message.txt", 
                        window=config.window,
