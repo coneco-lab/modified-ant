@@ -5,7 +5,7 @@ from psychopy import monitors, visual
    
 conditions_file = "mant-conditions.csv"
 NUMBER_OF_BLOCKS = 9
-TRIALS_PER_BLOCK = 72
+TRIALS_PER_BLOCK = 48
 MAX_TRIAL_DURATION = 3.6
 
 output_variables = ["cue_location",
