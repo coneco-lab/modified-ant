@@ -1,7 +1,7 @@
-experiment = "beh"
+experiment = "eeg"
 
 NUMBER_OF_BLOCKS = 10 if experiment == "mri" else 9
-TRIALS_PER_BLOCK = 24 if experiment == "mri" else 48
+TRIALS_PER_BLOCK = 24 if experiment == "mri" else 48                                        # sub-01-eeg did 72
 TRIALS_PER_SUBJECT = NUMBER_OF_BLOCKS*TRIALS_PER_BLOCK
 
 if experiment == "beh":
@@ -11,7 +11,7 @@ if experiment == "beh":
     blockwise_boxplots_nrows = 3
     blockwise_boxplots_ncols = 3
 elif experiment == "eeg":
-    data_dir = "/home/matteo/Documents/phd/abcc/ant/attention-network-test/outputs/eeg-pilot/"
+    data_dir = "/home/matteo/Documents/phd/abcc/ant/attention-network-test/outputs/eeg-experiment/"
     subject_sort_key = lambda path : int(path.stem.rsplit("_")[3])                          # sort by trial
     group_sort_key = lambda path : path.stem.rsplit("_")[0]                                 # sort by subject
     blockwise_boxplots_nrows = 3
