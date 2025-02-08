@@ -86,7 +86,7 @@ def read_mant_data(data_dir: str, sample_size: int, trials_per_subject: int, dat
     data_dir = Path(data_dir)
     all_output_files = sorted(data_dir.rglob(f"*{data_type}*.tsv"),
                               key=sort_key)
-
+    
     all_single_trials = []
     for file in all_output_files:
         trial_dataframe = pd.read_csv(filepath_or_buffer=file,
@@ -228,6 +228,58 @@ def plot_reaction_times(title: str,
     plt.savefig(figures_savedir / plot_filename,
                 bbox_inches="tight")
     plt.close()
+
+def plot_compact_boxplots(separate_conditions_data: pd.DataFrame,
+                          group: bool,
+                          sample_size: int,
+                          subject_id: str,
+                          figures_savedir: Path):
+    """Creates compact boxplots to compare RTs across cue and target conditions
+    
+    Parameters:
+    all_ordered_data -- a dataframe containing mANT data in long format (pd.DataFrame)
+    """
+    all_ordered_data = pd.concat(objs=separate_conditions_data,
+                                 axis=0)
+    all_ordered_data["target_congruent"] = all_ordered_data["target_congruent"].map({"yes": "congruent", "no": "incongruent"})
+    for x, hue in zip(["cue_type","target_congruent"],["target_congruent","cue_type"]):
+        if hue == "target_congruent":
+            order = ["spatial valid", "double"]
+            my_palette = {"congruent": "palegreen", "incongruent": "tomato"}
+            hue_order = ["congruent", "incongruent"]
+        elif hue == "cue_type":
+            order = ["congruent","incongruent"]
+            my_palette = {"spatial valid": "palegreen", "double": "tomato"}
+            hue_order = ["spatial valid", "double"]
+        _, ax = plt.subplots(figsize=(12,8))
+        sns.boxplot(data=all_ordered_data,
+                    x=x,
+                    y="rt",
+                    hue=hue,
+                    order=order,
+                    hue_order=hue_order,
+                    palette=my_palette,
+                    saturation=0.8,
+                    width=0.5,
+                    linewidth=2,
+                    legend=True)
+        ax.set_xlabel(xlabel="Cue type" if x == "cue_type" else "Target type",
+                    fontsize=12,
+                    fontweight="bold");
+        ax.set_ylabel(ylabel="RT (ms)",
+                    fontsize=12,
+                    fontweight="bold");
+        ax.legend(loc="upper right")
+        if group:
+            title = f"Reaction times vs. cue condition (N={sample_size})" if x == "cue_type" else f"Reaction times vs. target type (N={sample_size})"
+        else:
+            title = f"Reaction times vs. cue condition ({subject_id})" if x == "cue_type" else f"Reaction times vs. target type ({subject_id})"
+        ax.set_title(label=title,
+                    fontsize=12,
+                    fontweight="bold");
+        plt.savefig(figures_savedir / f"rt-across-{'cues' if x == 'cue_type' else 'targets'}.pdf",
+                    bbox_inches="tight")  
+        plt.close()  
 
 def plot_rt_over_conditions(conditions: list[pd.DataFrame], 
                             condition_names: list[str],

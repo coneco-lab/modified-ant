@@ -9,7 +9,7 @@ import analysis_utils as utils
 import analysis_config as config
 
 
-statistics_dir, figures_dir = utils.set_output_directories(experiment_name=config.experiment + "-pilot-2")
+statistics_dir, figures_dir = utils.set_output_directories(experiment_name=config.experiment + "-experiment")
 
 sample_size = utils.ask_sample_size()
 for subject_number in range(1,sample_size+1):
@@ -40,6 +40,12 @@ for subject_number in range(1,sample_size+1):
                                   condition_names=config.condition_names,
                                   figures_savedir=figures_subdir,
                                   plot_type=plot_type)
+        
+    utils.plot_compact_boxplots(separate_conditions_data=separate_conditions_data,
+                                group=False,
+                                sample_size=None,
+                                subject_id=subject_id,
+                                figures_savedir=figures_subdir)
 
     utils.plot_rt_over_conditions(conditions=separate_conditions_data,
                                   condition_names=config.abbreviated_condition_names,
@@ -92,6 +98,12 @@ for plot_title, plot_type in zip(config.plot_titles, config.plot_types):
                               condition_names=config.condition_names,
                               figures_savedir=figures_subdir,
                               plot_type=plot_type)
+    
+utils.plot_compact_boxplots(separate_conditions_data=separate_conditions_data,
+                            group=True,
+                            sample_size=sample_size,
+                            subject_id=None,
+                            figures_savedir=figures_subdir)
 
 utils.plot_rt_over_conditions(conditions=separate_conditions_data,
                               condition_names=config.abbreviated_condition_names,
