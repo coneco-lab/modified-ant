@@ -132,7 +132,7 @@ anova_table.to_csv(path_or_buf=statistics_dir / "parametric-rm-anova-table.csv",
 cue_post_hoc_tests = mc.MultiComparison(data=mant_data["rt"],
                                         groups=mant_data["cue_type"])
 summary_table, _, _ = cue_post_hoc_tests.allpairtest(stats.ttest_ind, 
-                                                     method= "bonf")
+                                                     method="bonf")
 writeable_summary_table = pd.DataFrame(summary_table)
 writeable_summary_table.to_csv(path_or_buf=statistics_dir / "./post-hoc-cues-ttest-bonferroni.csv",
                                sep=",")

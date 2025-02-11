@@ -369,7 +369,7 @@ def order_conditions_blockwise(mant_data: pd.DataFrame,
         ordered_block_data = pd.concat(objs=labelled_condition_rts,
                                        axis=0)
         ordered_block_data.reset_index(drop=True,
-                                    inplace=True)
+                                       inplace=True)
         blockwise_ordered_rts.append(ordered_block_data)
         start_slicing_at += trials_per_block
         stop_slicing_at += trials_per_block
