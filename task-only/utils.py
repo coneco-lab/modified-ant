@@ -226,9 +226,9 @@ def score_trial(trial_components, dependent_variables):
     response = dependent_variables["response"]
     reaction_time = dependent_variables["reaction_time"]
 
-    if trial_components["target_direction"] == "left" and response == "1":
+    if trial_components["target_direction"] == "left" and response == "left":
         correct = 1
-    elif trial_components["target_direction"] == "right" and response == "6":
+    elif trial_components["target_direction"] == "right" and response == "right":
         correct = 1        
     elif response == None:
         response = "miss"
