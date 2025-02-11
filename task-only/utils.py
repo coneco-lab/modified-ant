@@ -205,7 +205,7 @@ def run_trials_save_data(trials, elapsed_trials, response_clock, beh_data_folder
             behavioural_data_metadata = score_trial(trial_components=trial_components,
                                                     dependent_variables=dependent_variables)
             behavioural_data_metadata = {key:value for key,value in zip(config.output_variables, behavioural_data_metadata)}
-            save_trial(trial_number=trial_number,
+            save_trial(trial_number=trial_number+elapsed_trials,
                        data_to_save=[behavioural_data_metadata],
                        data_types=["beh"],
                        destination_folders=[beh_data_folder],
