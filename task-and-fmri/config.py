@@ -49,7 +49,7 @@ window = visual.Window(size=monitor.getSizePix(),
 possible_initial_fixations = [3000, 3250, 3500, 3750, 4000, 4500, 5000, 5500, 6500, 8000, 10000, 15000]
 possible_later_fixations = [300, 300, 300, 550, 800, 1050, 1550, 2300, 3300, 4800, 6550, 11800]
 
-display_times = {"instructions": 180,
+display_times = {"instructions": 300,
                  "fixation_demo": 10,
                  "cue_demo": 10,
                  "arrows_demo": 10,        
