@@ -100,9 +100,10 @@ def read_mant_data(data_dir: str, sample_size: int, trials_per_subject: int, dat
     all_trials.insert(loc=0,
                       column="subject",
                       value=subject_ids)
-    all_trials.replace(to_replace="none",
-                       value=np.nan,
-                       inplace=True)
+    with pd.option_context("future.no_silent_downcasting", True):
+        all_trials.replace(to_replace="none",
+                           value=np.nan,
+                           inplace=True)
     all_trials = all_trials.dropna(axis=0,
                                    how="any")
     return all_trials
@@ -239,6 +240,7 @@ def plot_compact_boxplots(separate_conditions_data: pd.DataFrame,
     Parameters:
     all_ordered_data -- a dataframe containing mANT data in long format (pd.DataFrame)
     """
+
     all_ordered_data = pd.concat(objs=separate_conditions_data,
                                  axis=0)
     all_ordered_data["target_congruent"] = all_ordered_data["target_congruent"].map({"yes": "congruent", "no": "incongruent"})
@@ -277,9 +279,10 @@ def plot_compact_boxplots(separate_conditions_data: pd.DataFrame,
         ax.set_title(label=title,
                     fontsize=12,
                     fontweight="bold");
-        plt.savefig(figures_savedir / f"rt-across-{'cues' if x == 'cue_type' else 'targets'}.pdf",
-                    bbox_inches="tight")  
-        plt.close()  
+        if figures_savedir:
+            plt.savefig(figures_savedir / f"rt-across-{'cues' if x == 'cue_type' else 'targets'}.pdf",
+                        bbox_inches="tight")  
+            plt.close()  
 
 def plot_rt_over_conditions(conditions: list[pd.DataFrame], 
                             condition_names: list[str],
