@@ -55,10 +55,10 @@ for subject_number in range(1,sample_size+1):
 
     blockwise_ordered_rts = utils.order_conditions_blockwise(mant_data=mant_data,
                                                              condition_names=config.abbreviated_condition_names,
-                                                             number_of_blocks=5 if config.experiment == "mri" and subject_id == "sub-01" else config.NUMBER_OF_BLOCKS,
-                                                             trials_per_block=48 if config.experiment == "mri" and subject_id == "sub-01" else config.TRIALS_PER_BLOCK)
+                                                             number_of_blocks=config.NUMBER_OF_BLOCKS,
+                                                             trials_per_block=config.TRIALS_PER_BLOCK)
 
-    utils.plot_blockwise_boxplots(nrows=1 if config.experiment == "mri" and subject_id == "sub-01" else config.blockwise_boxplots_nrows,
+    utils.plot_blockwise_boxplots(nrows=config.blockwise_boxplots_nrows,
                                   ncols=config.blockwise_boxplots_ncols,
                                   data_id=subject_id,
                                   sample_size=None,
@@ -129,7 +129,7 @@ anova_table = AnovaRM(data=mant_data,
 print(anova_table)
 anova_table.to_csv(path_or_buf=statistics_dir / "parametric-rm-anova-table.csv",
                    sep=",")
-cue_post_hoc_tests = mc.MultiComparison(data=mant_data["rt"],
+cue_post_hoc_tests = mc.MultiComparison(data=mant_data["rt"].astype(dtype="float"),
                                         groups=mant_data["cue_type"])
 summary_table, _, _ = cue_post_hoc_tests.allpairtest(stats.ttest_ind, 
                                                      method="bonf")
