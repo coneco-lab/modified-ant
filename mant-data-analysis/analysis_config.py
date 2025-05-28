@@ -1,23 +1,23 @@
-experiment = "eeg"
+experiment = "mri"
 
 NUMBER_OF_BLOCKS = 10 if experiment == "mri" else 9
-TRIALS_PER_BLOCK = 24 if experiment == "mri" else 48                                        # sub-01-eeg did 72
+TRIALS_PER_BLOCK = 24 if experiment == "mri" else 48                                        
 TRIALS_PER_SUBJECT = NUMBER_OF_BLOCKS*TRIALS_PER_BLOCK
 
 if experiment == "beh":
-    data_dir = "/home/matteo/Documents/phd/abcc/ant/attention-network-test/outputs/beh-pilot-2/"
+    data_dir = "/home/matteo/Documents/phd/abcc/abcc-data/behavioural-pilots-cimec/beh-pilot-2/"
     subject_sort_key = lambda path : int(path.stem.rsplit("_")[3])                          # sort by trial
     group_sort_key = lambda path : path.stem.rsplit("_")[0]                                 # sort by subject
     blockwise_boxplots_nrows = 3
     blockwise_boxplots_ncols = 3
 elif experiment == "eeg":
-    data_dir = "/home/matteo/Documents/phd/abcc/ant/attention-network-test/outputs/eeg-experiment/"
+    data_dir = "/home/matteo/Documents/phd/abcc/abcc-data/eeg-experiment-cimec/beh-data/"
     subject_sort_key = lambda path : int(path.stem.rsplit("_")[3])                          # sort by trial
     group_sort_key = lambda path : path.stem.rsplit("_")[0]                                 # sort by subject
     blockwise_boxplots_nrows = 3
     blockwise_boxplots_ncols = 3
 elif experiment == "mri":
-    data_dir = "/home/matteo/Documents/phd/abcc/ant/attention-network-test/outputs/mri-pilot/"
+    data_dir = "/home/matteo/Documents/phd/abcc/abcc-data/mri-experiment-cimec/beh-data/"
     subject_sort_key = lambda path : path.stem.rsplit("_")[2]                               # sort by run
     group_sort_key = lambda path : path.stem.rsplit("_")[0]                                 # sort by subject
     blockwise_boxplots_nrows = 2
