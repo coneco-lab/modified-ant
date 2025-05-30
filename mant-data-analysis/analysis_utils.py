@@ -108,20 +108,26 @@ def read_mant_data(data_dir: str, sample_size: int, trials_per_subject: int, dat
                                    how="any")
     return all_trials
 
-def fetch_mant_conditions(all_trials: pd.DataFrame) -> list[pd.DataFrame]:
+def fetch_mant_conditions(all_trials: pd.DataFrame, pure: bool) -> list[pd.DataFrame]:
     """Extracts condition-specific data from a dataframe that contains data from the whole experiment.
     
     Parameters:
     all_trials -- dataframe containing data from the whole experiment (type: pd.DataFrame)
-    
+    pure -- whether to fetch pure conditions (e.g., "cue 1") or combinations thereof (e.g., "cue 1 x target 1") (type: bool)
+
     Returns:
     conditions -- a list of dataframes, each one containing data for one condition (type: list[pd.DataFrame])
     """
-
-    condition1 = all_trials.loc[(all_trials["cue_type"] == "spatial valid") & (all_trials["target_congruent"] == "yes"),:]
-    condition2 = all_trials.loc[(all_trials["cue_type"] == "spatial valid") & (all_trials["target_congruent"] == "no"),:]
-    condition3 = all_trials.loc[(all_trials["cue_type"] == "double") & (all_trials["target_congruent"] == "yes"),:]
-    condition4 = all_trials.loc[(all_trials["cue_type"] == "double") & (all_trials["target_congruent"] == "no"),:]
+    if pure:
+        condition1 = all_trials.loc[(all_trials["cue_type"] == "spatial valid"),:]
+        condition2 = all_trials.loc[(all_trials["cue_type"] == "double"),:]
+        condition3 = all_trials.loc[(all_trials["target_congruent"] == "yes"),:]
+        condition4 = all_trials.loc[(all_trials["target_congruent"] == "no"),:]
+    else:
+        condition1 = all_trials.loc[(all_trials["cue_type"] == "spatial valid") & (all_trials["target_congruent"] == "yes"),:]
+        condition2 = all_trials.loc[(all_trials["cue_type"] == "spatial valid") & (all_trials["target_congruent"] == "no"),:]
+        condition3 = all_trials.loc[(all_trials["cue_type"] == "double") & (all_trials["target_congruent"] == "yes"),:]
+        condition4 = all_trials.loc[(all_trials["cue_type"] == "double") & (all_trials["target_congruent"] == "no"),:]
     conditions = [condition1,condition2,condition3,condition4]
     for condition in conditions:
         condition.reset_index(drop=True,
@@ -364,7 +370,8 @@ def order_conditions_blockwise(mant_data: pd.DataFrame,
     blockwise_ordered_rts = []
     for _ in range(number_of_blocks):
         unordered_data = mant_data[start_slicing_at:stop_slicing_at]
-        conditions =  fetch_mant_conditions(all_trials=unordered_data)
+        conditions =  fetch_mant_conditions(all_trials=unordered_data,
+                                            pure=False)
         labelled_condition_rts = []
         for condition, condition_name in zip(conditions, condition_names):
             labelled_condition_rt = pd.DataFrame(condition["rt"]).assign(condition=[condition_name]*len(condition))
