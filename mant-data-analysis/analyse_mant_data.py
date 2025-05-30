@@ -30,9 +30,12 @@ for subject_number in range(1,sample_size+1):
                                      data_type="beh",
                                      sort_key=config.subject_sort_key)
 
-    separate_conditions_data = utils.fetch_mant_conditions(all_trials=mant_data)
+    separate_conditions_data = utils.fetch_mant_conditions(all_trials=mant_data,
+                                                           pure=False)
     descriptives_dataframes = utils.get_condition_descriptives(conditions=separate_conditions_data,
                                                                condition_names=config.abbreviated_condition_names)
+    descriptives_dataframes.to_csv(path_or_buf=statistics_dir / f"{subject_id}-descriptives.csv",
+                                   sep=",")
 
     for plot_title, plot_type in zip(config.plot_titles, config.plot_types):
         utils.plot_reaction_times(title=plot_title + f" ({subject_id})",
@@ -88,9 +91,15 @@ mant_data = utils.read_mant_data(data_dir=config.data_dir,
                                  trials_per_subject=config.TRIALS_PER_SUBJECT,
                                  sort_key=config.group_sort_key)
 
-separate_conditions_data = utils.fetch_mant_conditions(all_trials=mant_data)
+separate_conditions_data = utils.fetch_mant_conditions(all_trials=mant_data,
+                                                       pure=False)
 descriptives_dataframes = utils.get_condition_descriptives(conditions=separate_conditions_data,
                                                            condition_names=config.abbreviated_condition_names)
+group_statistics_dir = Path(statistics_dir / "group")
+if not group_statistics_dir.is_dir():
+    group_statistics_dir.mkdir()
+descriptives_dataframes.to_csv(path_or_buf=group_statistics_dir / f"descriptives.csv",
+                               sep=",")
 
 for plot_title, plot_type in zip(config.plot_titles, config.plot_types):
     utils.plot_reaction_times(title=plot_title + f"(N={sample_size})",
@@ -127,13 +136,13 @@ anova_table = AnovaRM(data=mant_data,
                       within=["cue_type","target_congruent"],
                       aggregate_func="mean").fit()
 print(anova_table)
-anova_table.to_csv(path_or_buf=statistics_dir / "parametric-rm-anova-table.csv",
+anova_table.to_csv(path_or_buf=group_statistics_dir / "parametric-rm-anova-table.csv",
                    sep=",")
 cue_post_hoc_tests = mc.MultiComparison(data=mant_data["rt"].astype(dtype="float"),
                                         groups=mant_data["cue_type"])
 summary_table, _, _ = cue_post_hoc_tests.allpairtest(stats.ttest_ind, 
                                                      method="bonf")
 writeable_summary_table = pd.DataFrame(summary_table)
-writeable_summary_table.to_csv(path_or_buf=statistics_dir / "./post-hoc-cues-ttest-bonferroni.csv",
+writeable_summary_table.to_csv(path_or_buf=group_statistics_dir / "post-hoc-cues-ttest-bonferroni.csv",
                                sep=",")
 print(summary_table)
