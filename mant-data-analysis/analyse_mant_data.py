@@ -28,7 +28,8 @@ for subject_number in range(1,sample_size+1):
                                      sample_size=1,
                                      trials_per_subject=config.TRIALS_PER_SUBJECT,
                                      data_type="beh",
-                                     sort_key=config.subject_sort_key)
+                                     sort_key=config.subject_sort_key,
+                                     drop_nans=True)
 
     separate_conditions_data = utils.fetch_mant_conditions(all_trials=mant_data,
                                                            pure=False)
@@ -89,7 +90,8 @@ mant_data = utils.read_mant_data(data_dir=config.data_dir,
                                  sample_size=sample_size,
                                  data_type="beh",
                                  trials_per_subject=config.TRIALS_PER_SUBJECT,
-                                 sort_key=config.group_sort_key)
+                                 sort_key=config.group_sort_key,
+                                 drop_nans=True)
 
 separate_conditions_data = utils.fetch_mant_conditions(all_trials=mant_data,
                                                        pure=False)

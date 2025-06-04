@@ -69,18 +69,19 @@ def set_figures_subdir(figures_dir: Path, subject: str | None, group: bool = Tru
         pass
     return figures_subdir
 
-def read_mant_data(data_dir: str, sample_size: int, trials_per_subject: int, data_type: str, sort_key) -> pd.DataFrame:
+def read_mant_data(data_dir: str, sample_size: int, trials_per_subject: int, data_type: str, sort_key, drop_nans: bool) -> pd.DataFrame:
     """Reads mANT data into a pandas dataframe.
     
     Parameters:
     data_dir -- the path to the folder that stores mANT data (type: str)
     sample_size -- the number of subjects that took part in the experiment (type: int)
+    trials_per_subject -- the number of experimental trials administered to each subject (type: int) 
     data_type -- the type of data to read (e.g., "beh" vs. "onsets") (type: str)
     sort_key -- the criterion to sort files before reading them (e.g., by run vs. by trial) (lambda function)
+    drop_nans -- whether to drop nans from mANT data (type: bool)
     
     Returns:
     all_trials -- all mANT data found in the 'data_dir' folder (type: pd.DataFrame)
-    sample_size -- the sample size relative to the folder (i.e., 1 for a single subject's folder) (type: int)
     """
 
     data_dir = Path(data_dir)
@@ -100,12 +101,13 @@ def read_mant_data(data_dir: str, sample_size: int, trials_per_subject: int, dat
     all_trials.insert(loc=0,
                       column="subject",
                       value=subject_ids)
-    with pd.option_context("future.no_silent_downcasting", True):
-        all_trials.replace(to_replace="none",
-                           value=np.nan,
-                           inplace=True)
-    all_trials = all_trials.dropna(axis=0,
-                                   how="any")
+    if drop_nans:
+        with pd.option_context("future.no_silent_downcasting", True):
+            all_trials.replace(to_replace="none",
+                               value=np.nan,
+                               inplace=True)
+        all_trials = all_trials.dropna(axis=0,
+                                       how="any")
     return all_trials
 
 def fetch_mant_conditions(all_trials: pd.DataFrame, pure: bool) -> list[pd.DataFrame]:
