@@ -1,8 +1,6 @@
-## (modified) Attention Network Test ##
+# (modified) Attention Network Test 
 
 This repository contains a modified version of the Attention Network Test ([Fan et al., 2002](https://direct.mit.edu/jocn/article-abstract/14/3/340/3628/Testing-the-Efficiency-and-Independence-of)) (mANT), implemented in Python. 
-
----
 
 The repository contains three subfolders:
 - `task-only` contains code to run the mANT in a behaviour-only setting. See its own README for details
@@ -14,9 +12,7 @@ All subfolders are independent of each other.
 
 In principle, subfolders would not be necessary: the same code could be used for different experiments if it included a method to select experiment-specific settings (for example, conditional logic). However, separate implementations seemed to be the cleanest solution.     
 
----
-
-# **Dependencies:**
+## Dependencies
 
 The code contained in the task subfolders (i.e., `task-only`, `task-and-eeg`, and `task-and-fmri`) relies on the following software:
 
@@ -38,8 +34,7 @@ While the code contained in `mant-data-analysis` relies on:
 |[scipy](https://scipy.org/)           | 1.12.0                  | `conda install scipy`                                            |
 |[statsmodels](https://www.statsmodels.org/stable/index.html)    | 0.14.4 | `conda install -c conda-forge statsmodels`              |
 
-
-# **Installation notes:**
+## Installation notes
 
 - A good guide to Python installations (not specific to the mANT nor PsychoPy) is available at [this HTTPS URL](https://github.com/vigji/python-cimec/blob/main/python-installation.md)
 - We had problems installing PsychoPy via `conda`, despite different machines with different operating systems and different levels of user expertise. We found it easier to install via [`pip`](https://pip.pypa.io/en/stable/) (`pip install psychopy`)
@@ -48,17 +43,12 @@ While the code contained in `mant-data-analysis` relies on:
     - Its main advantage over other PsychoPy versions is a GUI, whose use we discourage (code is more flexible, transparent, and reproducible)
     - It comes with its own Python code editor, which has a lot less features and provides a worse user experience than common, equally free alternatives like [VSCode](https://code.visualstudio.com/)
 
----
-
-# **Planned improvements:**
+## Planned improvements
 
 - Add functions to compile `mant-conditions.csv` automatically 
 - Refactor for higher elegance and efficiency (if/as needed)
-- Add `requirements.txt` files
 
---- 
-
-# **Contacts:**
+# Contacts
 
 For questions or improvement suggestions, you can:
 - Open an issue at - or send a pull request to - this repository
