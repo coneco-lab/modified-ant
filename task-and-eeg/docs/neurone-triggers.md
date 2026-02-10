@@ -35,11 +35,31 @@ As of April 2024, the syntax to send one signal along a given pin of the paralle
 Imports the `parallel` module from the PsychoPy library, i.e., it makes it available to the script you are running. Place this atop your script
 2. `port = parallel.ParallelPort(address=<insert address here>)`
 Initializes a `port` object from the  `ParallelPort` class contained in `parallel`. This object will have an `address` attribute with the value that you insert.  In other words, this code line tells Python that there's a thing called `port` which is a parallel port with address `address`. 
-	Place this line right the iteration over trials
+	Place this line right before the iteration over trials
 3. `port.setPin(pinNumber=<insert pin number here>, state=1)`
 Sends a signal through a given pin of the parallel port. Place it wherever you need to send a signal (e.g., every time you present a given stimulus)
 4. `port.setPin(pinNumber=<insert pin number here>, state=0)`
 Stops sending a signal through the given pin of the parallel port
+
+### A finer-grained alternative
+
+The syntax described above opens or closes specific pins without specifying what happens to the others, leaving them in an undetermined state. This can decrease the precision of the experimental set-up, because pins might be inadvertently left open. 
+
+To exert a finer-grained control, one can simultaneously specify the state of all pins with the following syntax:
+
+	from psychopy import parallel
+	port = parallel.ParallelPort(address=<insert address here>)`
+	port.setData(int("00000010", base=2))
+
+#### Step-by-step breakdown
+1. `from psychopy import parallel`
+Imports the `parallel` module from the PsychoPy library, i.e., it makes it available to the script you are running. Place this atop your script
+2. `port = parallel.ParallelPort(address=<insert address here>)`
+Initializes a `port` object from the  `ParallelPort` class contained in `parallel`. This object will have an `address` attribute with the value that you insert.  In other words, this code line tells Python that there's a thing called `port` which is a parallel port with address `address`. 
+	Place this line right before the iteration over trials
+3. `port.setData(int("00000010", base=2))`
+Sends a signal through pin number $2$. In fact, "00000010" is number $2$ written in binary format, and Python's function `int()` converts it to integer format (that is, the one we are used to). The argument `base=2` tells `int()` that the starting number is represented in a base-2 system (that is, a binary system).
+
 
 #### What happens when you open pins
 
