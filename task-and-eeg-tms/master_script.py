@@ -5,7 +5,7 @@ from psychopy import core, data, gui, parallel
 
 experiment_info = {"name": "mANT",
                    "subject": "",
-                   "session": "eeg",
+                   "session": "tms",
                    "date": data.getDateStr(),
                    "psychopy_version": "2022.2.5"}
 
@@ -28,7 +28,7 @@ if experiment_info["subject"] != "": # start experiment only if subject ID has b
     training_conditions = data.importConditions(config.training_conditions_file)
     conditions = data.importConditions(config.conditions_file)
     response_clock = core.Clock()
-    port = parallel.ParallelPort(address="0x3FD8") 
+    port = parallel.ParallelPort(address=config.PORT_ADDRESS) 
     port.setData(int("00000000",2))
 
     utils.display_text(file_to_read=text_folder / "welcome-message.txt", 

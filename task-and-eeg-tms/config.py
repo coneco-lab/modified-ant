@@ -42,6 +42,7 @@ window = visual.Window(size=monitor.getSizePix(),
                        useFBO=True,
                        units="deg")
 
+PORT_ADDRESS = "0x3FD8"
 TMS_TARGET_MILLISECONDS = 700
 MILLISECONDS_IN_SECOND = 1000
 FRAME_DURATION_MILLISECONDS = MILLISECONDS_IN_SECOND / monitor_info["refresh_rate_hz"]
