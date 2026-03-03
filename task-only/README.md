@@ -26,6 +26,6 @@ For questions or improvement suggestions, you can:
 - Open an issue at - or send a pull request to - this repository
 - Write `matteo [dot] dematola [at] unitn [dot] it`
 
-Matteo De Matola ([UniTN](https://webapps.unitn.it/du/en/Persona/PER0247884/Pubblicazioni) | [GitHub](https://github.com/matteo-d-m))
+Matteo De Matola ([UniTN](https://webapps.unitn.it/du/en/Persona/PER0247884/) | [GitHub](https://github.com/matteo-d-m))
 
 Last updated January 2025
