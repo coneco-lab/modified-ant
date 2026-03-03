@@ -6,6 +6,7 @@ The repository contains three subfolders:
 - `task-only` contains code to run the mANT in a behaviour-only setting. See its own README for details
 - `task-and-eeg` contains code to run the mANT during electroencephalography (EEG). See its own README for details (in short, the code is the same as in `task-only`, plus some lines to send 8-bit triggers to the EEG recording system)
 - `task-and-fmri` contains code to run the mANT during functional magnetic resonance imaging (fMRI). See its own README for details (in short, the code is the same as in `task-only`, but the task timeline is different and there are commands to receive triggers from the fMRI scanner in form of simulated keypresses)
+- `task-and-eeg-tms` contains code to run the mANT during a joint EEG and transcranial magnetic stimulation (TMS) experiment. See its own README for details (in short, the code is the same as in `task-and-eeg`, plus some lines to trigger TMS at times of interest)
 - `mant-data-analysis` contains code to analyse and plot mANT data 
 
 All subfolders are independent of each other. 
@@ -14,7 +15,7 @@ In principle, subfolders would not be necessary: the same code could be used for
 
 ## Dependencies
 
-The code contained in the task subfolders (i.e., `task-only`, `task-and-eeg`, and `task-and-fmri`) relies on the following software:
+The code contained in the task subfolders (i.e., `task-only`, `task-and-eeg`, `task-and-fmri`, and `task-and-eeg-tms`) relies on the following software:
 
 | Language/Package | Versions tested on | Suggested installation |
 |------------------|--------------------|------------------------|
