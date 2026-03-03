@@ -1,4 +1,4 @@
-## mANT - Task only ##
+# mANT - Task only 
 
 This mANT implementation consists of three code files, plus supporting materials:
 - `utils.py`: a custom Python module that contains functions to draw experimental stimuli, display them with the appropriate timing, send 8-bit triggers to an EEG system, collect a subject's responses and save them to disk  
