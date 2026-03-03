@@ -16,7 +16,8 @@ output_variables = ["cue_location",
                     "target_direction",
                     "response",
                     "correct",
-                    "rt"]
+                    "rt",
+                    "tms_timing"]
                     
 monitor_info = {"name": "monitor-eeglab", 
                 "size_pixels": [2560,1440],      
