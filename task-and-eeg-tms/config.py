@@ -43,15 +43,15 @@ window = visual.Window(size=monitor.getSizePix(),
                        units="deg")
 
 PORT_ADDRESS = "0x3FD8"
-TMS_TARGET_MILLISECONDS = 700
+TMS_TARGET_MILLISECONDS = 700                               # post cue offset
 MILLISECONDS_IN_SECOND = 1000
 FRAME_DURATION_MILLISECONDS = MILLISECONDS_IN_SECOND / monitor_info["refresh_rate_hz"]
 tms_frame = round(TMS_TARGET_MILLISECONDS / FRAME_DURATION_MILLISECONDS)
 FIRST_FRAME = 0
 LAST_FRAME = 65
-FRAME_AT_650_MS = round(650 / FRAME_DURATION_MILLISECONDS)
-FRAME_AT_750_MS = round(750 / FRAME_DURATION_MILLISECONDS)
-random_frames_list = [frame for frame in range(FIRST_FRAME+1, LAST_FRAME-1) if frame > FRAME_AT_650_MS or frame < FRAME_AT_750_MS]
+FRAME_AT_600_MS = round(600 / FRAME_DURATION_MILLISECONDS)  # post cue offset
+FRAME_AT_800_MS = round(800 / FRAME_DURATION_MILLISECONDS)  # post cue offset
+random_frames_list = [frame for frame in range(FIRST_FRAME+1, LAST_FRAME-1) if frame < FRAME_AT_600_MS or frame > FRAME_AT_800_MS]
 
 display_times = {"instructions": 180,
                  "fixation_demo": 10,
