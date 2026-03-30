@@ -1,5 +1,7 @@
 # (modified) Attention Network Test 
 
+[![DOI](https://zenodo.org/badge/731645911.svg)](https://doi.org/10.5281/zenodo.19338013)
+
 This repository contains a modified version of the Attention Network Test ([Fan et al., 2002](https://direct.mit.edu/jocn/article-abstract/14/3/340/3628/Testing-the-Efficiency-and-Independence-of)) (mANT), implemented in Python. 
 
 The repository contains three subfolders:
